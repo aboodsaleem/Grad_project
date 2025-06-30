@@ -1,5 +1,12 @@
 @extends('admin.admin_Dashboard')
+@section('title', 'Admin Profile')
+@section('css')
+
+@endsection
+
+
 @section('admin')
+
 <div class="page-content">
 				<!--breadcrumb-->
 				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
@@ -136,4 +143,10 @@ $(document).ready(function() {
 
 </script>
 
+@section('js')
+
 @endsection
+
+@endsection
+
+

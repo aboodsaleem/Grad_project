@@ -1,4 +1,9 @@
 @extends('admin.admin_Dashboard')
+@yield('title', ' Dashboard')
+
+@section('css')
+
+@endsection
 @section('admin')
 <div class="page-content">
 
@@ -288,5 +293,9 @@
 					</div>
 
 			</div>
+
+@endsection
+
+@section('js')
 
 @endsection

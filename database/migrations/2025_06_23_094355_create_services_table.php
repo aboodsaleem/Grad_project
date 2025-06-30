@@ -11,21 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('provider_id')->constrained('users')->onDelete('cascade'); // مزود الخدمة
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->decimal('price', 8, 2);
             $table->string('photo')->nullable();
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-            $table->enum('role', ['admin', 'service_provider', 'customer'])->default('customer');
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
-
         });
     }
 
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('services');
     }
 };

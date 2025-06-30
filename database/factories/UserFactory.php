@@ -36,6 +36,27 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
         ];
     }
+    public function provider()
+{
+    return $this->state(fn () => [
+        'role' => 'service_provider',
+    ]);
+}
+
+public function customer()
+{
+    return $this->state(fn () => [
+        'role' => 'customer',
+    ]);
+}
+
+public function admin()
+{
+    return $this->state(fn () => [
+        'role' => 'admin',
+    ]);
+}
+
 
     /**
      * Indicate that the model's email address should be unverified.

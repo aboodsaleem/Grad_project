@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin.admin_login');
 });
 
 Route::get('/dashboard', function () {
@@ -25,12 +25,12 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->controller(AdminController::class)->group(function () {
-   Route::get('/admin/dashboard', 'adminDashboard')->name('admin.dashboard');
-   Route::get('/admin/logout',  'AdminDestroy')->name('admin.logout');
-   Route::get('/admin/profile','adminProfile')->name('admin.profile');
-   Route::post('/admin/update/','updateProfile')->name('admin.update');
-   Route::get('admin/change/password', 'AdminChangePassword')->name('admin.change.password');
-   Route::post('/admin/update-password' , 'AdminUpdatePassword')->name('admin.update.password');
+    Route::get('/admin/dashboard', 'adminDashboard')->name('admin.dashboard');
+    Route::get('/admin/logout',  'AdminDestroy')->name('admin.logout');
+    Route::get('/admin/profile','adminProfile')->name('admin.profile');
+    Route::post('/admin/update/','updateProfile')->name('admin.update');
+    Route::get('admin/change/password', 'AdminChangePassword')->name('admin.change.password');
+    Route::post('/admin/update-password' , 'AdminUpdatePassword')->name('admin.update.password');
 });
 Route::get('/admin/login',  [AdminController::class , 'AdminLogin'])->name('admin.login');
 

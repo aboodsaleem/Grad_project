@@ -19,11 +19,11 @@ class Review extends Model
 
     public function service()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(Service::class)->withDefault();
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class); // العميل
+        return $this->belongsTo(User::class)->withDefault(); // العميل
     }
 }

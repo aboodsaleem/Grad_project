@@ -1,5 +1,5 @@
 @extends('admin.admin_Dashboard')
-@yield('title', ' Dashboard')
+@yield('title', 'Admin Dashboard')
 
 @section('css')
 

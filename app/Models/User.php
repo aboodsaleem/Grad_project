@@ -48,11 +48,11 @@ class User extends Authenticatable
     // التقييمات التي قام بها العميل
     public function reviews()
     {
-        return $this->hasMany(Review::class, 'user_id');
+        return $this->hasMany(Review::class);
     }
 
     // المدفوعات التي قام بها المستخدم (عميل)
-    public function payments()
+    public function payment()
     {
         return $this->hasMany(Payment::class, 'user_id');
     }
@@ -62,4 +62,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Availability::class, 'provider_id');
     }
+
+    // static public function getRecord() {
+    //     $return = self::select('users')->orderBy('id','desc');
+    // }
 }

@@ -17,7 +17,7 @@
     <link href="{{ asset('adminbackend/assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('adminbackend/assets/css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('adminbackend/assets/css/icons.css') }}" rel="stylesheet">
-    <title>service_provider Login </title>
+    <title>Service Provider Login </title>
 </head>
 
         <!-- Validation Errors -->

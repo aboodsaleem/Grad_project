@@ -17,7 +17,7 @@ class Role
     {
 
     if ($request->user()->role !== $role) {
-        return redirect('/dashboard'); // توجيه المستخدم غير المصرح له
+        return redirect('dashboard'); // توجيه المستخدم غير المصرح له
     }
         return $next($request);
     }

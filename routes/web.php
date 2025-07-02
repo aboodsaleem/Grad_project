@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Service_ProviderController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('admin.admin_login');
+    return view('welcome');
 });
 
 Route::get('/dashboard', function () {
@@ -25,12 +26,22 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->controller(AdminController::class)->group(function () {
-    Route::get('/admin/dashboard', 'adminDashboard')->name('admin.dashboard');
-    Route::get('/admin/logout',  'AdminDestroy')->name('admin.logout');
-    Route::get('/admin/profile','adminProfile')->name('admin.profile');
-    Route::post('/admin/update/','updateProfile')->name('admin.update');
-    Route::get('admin/change/password', 'AdminChangePassword')->name('admin.change.password');
-    Route::post('/admin/update-password' , 'AdminUpdatePassword')->name('admin.update.password');
+
+    Route::prefix('admin')->name('admin.')->group(function() {
+    Route::get('/dashboard', 'adminDashboard')->name('dashboard');
+    Route::get('/logout',  'AdminDestroy')->name('logout');
+    Route::get('/profile','adminProfile')->name('profile');
+    Route::post('/update','updateProfile')->name('update');
+    Route::get('/change/password', 'AdminChangePassword')->name('change.password');
+    Route::post('/update-password' , 'AdminUpdatePassword')->name('update.password');
+    Route::get('users', [AdminController::class , 'admin_users'])->name('users.list');
+    Route::get('users/view/{id}', [AdminController::class , 'admin_users_view'])->name('users.view');
+
+    Route::resource('categories', CategoryController::class);
+
+
+
+});
 });
 Route::get('/admin/login',  [AdminController::class , 'AdminLogin'])->name('admin.login');
 
@@ -43,7 +54,6 @@ Route::middleware(['auth', 'role:service_provider'])->controller(Service_Provide
     Route::get('/service_provider/logout',  'Service_ProviderDestroy')->name('Service_Provider.logout');
 });
 Route::get('/service_provider/login',  [Service_ProviderController::class , 'service_providerlogin'])->name('Service_Provider.login');
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

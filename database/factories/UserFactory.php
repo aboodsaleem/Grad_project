@@ -21,21 +21,25 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    public function definition()
     {
+        $roles = ['admin', 'service_provider', 'customer'];
+        $status = ['active', 'inactive'];
+
         return [
-            'username' => fake()->username(),
-            'email' => fake()->unique()->safeEmail(),
+            'username' => $this->faker->userName(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => Hash::make('123456'),
-            'phone' => $this->faker->phoneNumber,
-            'address' => $this->faker->address,
-            'photo' => $this->faker->imageUrl(60, 60),
-            'role' => $this->faker->randomElement(['admin', 'service_provider', 'customer']),
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'password' => Hash::make('password'), // كلمة المرور الافتراضية
+            'photo' => null,
+            'phone' => $this->faker->phoneNumber(),
+            'address' => $this->faker->address(),
+            'role' => $this->faker->randomElement($roles),
+            'status' => $this->faker->randomElement($status),
             'remember_token' => Str::random(10),
         ];
     }
+
     public function provider()
 {
     return $this->state(fn () => [

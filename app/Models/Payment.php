@@ -20,12 +20,12 @@ class Payment extends Model
     // علاقة الدفع بالحجز
     public function booking()
     {
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(Booking::class)->withDefault();
     }
 
     // المستخدم الذي قام بالدفع (عادة عميل)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault();
     }
 }

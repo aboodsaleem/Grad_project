@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-        public function adminDashboard(Request $request){
+    public function adminDashboard(Request $request){
 
         return view('admin.index');
     }
@@ -105,9 +106,15 @@ public function AdminUpdatePassword(Request $request)
 
 public function admin_users(Request $request){
 
-    $dataUsers = User::orderBy('id','desc')->paginate(20);
+    $dataUsers = User::orderBy('id', 'desc')->paginate(3);
     return view('admin.users.list', compact('dataUsers'));
 
+}
+
+public function admin_users_view($id)
+{
+    $dataUsers = User::findOrFail($id);
+    return view('admin.users.view', compact('dataUsers'));
 }
 
 
@@ -122,5 +129,4 @@ public function AdminDestroy(Request $request){
         return redirect()->route('admin.login');
 }
 // End Mehtod
-
 }

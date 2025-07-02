@@ -1,4 +1,5 @@
 @extends('service_provider.serviceprovider_Dashboard')
+@section('title' , 'Service Provider Dashboard')
 @section('service_provider')
 <div class="page-content">
 

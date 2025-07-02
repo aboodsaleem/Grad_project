@@ -1,4 +1,6 @@
 @extends('service_provider.serviceprovider_Dashboard')
+@section('title' , 'Change Password')
+
 @section('service_provider')
 
 

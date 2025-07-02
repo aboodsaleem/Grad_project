@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class Service_ProviderController extends Controller
 {
-    public function service_providerDashboard(){
+    public function service_providerDashboard(Request $request){
 
         return view('service_provider.index');
     }

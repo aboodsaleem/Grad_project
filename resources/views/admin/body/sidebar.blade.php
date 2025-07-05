@@ -45,7 +45,7 @@
 
                 <li class="menu-label">Role</li>
 				<li>
-					<a href="{{ route('admin.users.list') }}" target="_blank">
+					<a href="{{ route('admin.users.list') }}">
 						<div class="parent-icon"><i class="bx bx-folder"></i>
 						</div>
 						<div class="menu-title">Users</div>
@@ -64,6 +64,8 @@
 						<li> <a href="{{ route('admin.categories.index') }}"><i class="bx bx-right-arrow-alt"></i>All Categories</a>
 						</li>
 						<li> <a href="{{ route('admin.categories.create') }}"><i class="bx bx-right-arrow-alt"></i>Create Categories</a>
+						</li>
+                        <li> <a href="{{ route('admin.categories.trashed') }}"><i class="bx bx-right-arrow-alt"></i>Create Categories</a>
 						</li>
 
 					</ul>

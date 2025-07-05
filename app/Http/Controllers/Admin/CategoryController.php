@@ -79,12 +79,37 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    // Show trashed categories
+
+public function softDelete($id)
     {
+        $category = Category::findOrFail($id);
         $category->delete();
 
-        return redirect()->route('admin.categories.index')
-        ->with('msg', 'Category Deleted Successfully')
-        ->with('type', 'danger');
+        return redirect()->route('admin.categories.index')->with('success', 'Category moved to trash.');
+    }
+
+    public function trashed()
+    {
+        $categories = Category::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        return view('admin.categories.trashed', compact('categories'));
+    }
+
+    public function restore($id)
+    {
+        $category = Category::withTrashed()->findOrFail($id);
+        $category->restore();
+
+        return redirect()->route('admin.categories.index')->with('success', 'Category restored successfully.');
+    }
+
+    public function forceDelete($id)
+    {
+        $category = Category::withTrashed()->findOrFail($id);
+        $category->forceDelete();
+
+        return redirect()->route('admin.categories.index')->with('success', 'Category permanently deleted.');
     }
 }
+
+

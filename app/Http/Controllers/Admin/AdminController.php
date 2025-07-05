@@ -105,11 +105,10 @@ public function AdminUpdatePassword(Request $request)
 }
 
 public function admin_users(Request $request){
-
-    $dataUsers = User::orderBy('id', 'desc')->paginate(3);
+    $dataUsers = User::withTrashed()->orderBy('id', 'desc')->paginate(10);
     return view('admin.users.list', compact('dataUsers'));
-
 }
+
 
 public function admin_users_view($id)
 {
@@ -128,5 +127,43 @@ public function AdminDestroy(Request $request){
 
         return redirect()->route('admin.login');
 }
+
+// حذف مؤقت (Soft Delete)
+public function softDelete($id)
+{
+    $user = User::findOrFail($id);
+    $user->delete();
+    return redirect()->route('admin.users.list')->with('success', 'User temporarily deleted');
+}
+
+// استرجاع مستخدم
+public function restore($id)
+{
+    $user = User::withTrashed()->findOrFail($id);
+    $user->restore();
+    return redirect()->route('admin.users.list')->with('success', 'User restored successfully.');
+}
+
+// حذف نهائي (Force Delete)
+public function forceDelete($id)
+{
+    $user = User::withTrashed()->findOrFail($id);
+
+    // حذف الصورة من السيرفر إذا وجدت
+    if ($user->photo && file_exists(public_path($user->photo))) {
+        unlink(public_path($user->photo));
+    }
+
+    $user->forceDelete();
+    return redirect()->route('admin.users.list')->with('success', 'This user has been permanently deleted.');
+}
+
+public function trashed()
+{
+    $trashedUsers = User::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+    return view('admin.users.trashed', compact('trashedUsers'));
+}
+
+
 // End Mehtod
 }

@@ -1,22 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\ServiceProvider;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class providerCategoryController extends Controller
 {
     public function index()
     {
+        // لو الفئات عامة، نعرضها كلها
         $categories = Category::orderBy('id', 'desc')->paginate(20);
-        return view('admin.categories.index', compact('categories'));
+
+        // لو مزود الخدمة له فئات خاصة (مثلاً column provider_id)
+        // $categories = Category::where('provider_id', auth()->id())->orderBy('id','desc')->paginate(20);
+
+        return view('service_provider.categories.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('admin.categories.create');
+        return view('service_provider.categories.create');
     }
 
     public function store(Request $request)
@@ -26,17 +31,19 @@ class CategoryController extends Controller
             'description' => 'nullable|string',
         ]);
 
+        // لو فئات خاصة لكل مزود: $data['provider_id'] = auth()->id();
+
         Category::create($request->only('name', 'description'));
 
         return redirect()
-            ->route('admin.categories.index')
+            ->route('provider.categories.index')
             ->with('msg', 'Category added successfully')
             ->with('type', 'success');
     }
 
     public function edit(Category $category)
     {
-        return view('admin.categories.edit', compact('category'));
+        return view('service_provider.categories.edit', compact('category'));
     }
 
     public function update(Request $request, Category $category)
@@ -49,7 +56,7 @@ class CategoryController extends Controller
         $category->update($request->only('name', 'description'));
 
         return redirect()
-            ->route('admin.categories.index')
+            ->route('provider.categories.index')
             ->with('msg', 'Category updated successfully')
             ->with('type', 'info');
     }
@@ -57,14 +64,8 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $category = Category::findOrFail($id);
-
-        // حذف صورة اذا موجودة (لو تستخدم صورة في التصنيف)
-        // if ($category->photo && file_exists(public_path($category->photo))) {
-        //     unlink(public_path($category->photo));
-        // }
-
         $category->delete();
 
-        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('provider.categories.index')->with('success', 'Category deleted successfully.');
     }
 }

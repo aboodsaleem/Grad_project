@@ -6,8 +6,6 @@
     .btn i {
         vertical-align: middle;
         font-size: 1.3rem;
-        margin-top: 0em;
-        margin-bottom: 0em;
         margin-right: 5px;
     }
 </style>
@@ -34,13 +32,20 @@
                     <div class="d-flex align-items-center">
                         <h5 class="mb-0">All Categories</h5>
                         <div class="ms-auto">
-                            <a href="{{ route('admin.categories.trashed') }}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-trash"></i> Trashed
+                            <a href="{{ route('admin.categories.create') }}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Add Category
                             </a>
                         </div>
                     </div>
+                    @if(session('msg'))
+    <div class="alert alert-{{ session('type') ?? 'info' }} alert-dismissible fade show" role="alert">
+        {{ session('msg') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 
-                    @include('admin.msg')
+
+
                     <hr>
 
                     <div class="table-responsive">
@@ -64,18 +69,13 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
 
-                                        <form action="{{ route('admin.categories.softDelete', $category->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-warning btn-sm delete-btn"
-                                                data-url="{{ route('admin.categories.softDelete', $category->id) }}"
-                                                data-title="Are you sure you want to delete this category?"
-                                                data-confirm="Yes, delete it!"
-                                                data-cancel="Cancel"
-                                                data-method="DELETE">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-danger btn-sm delete-btn"
+                                            data-url="{{ route('admin.categories.destroy', $category->id) }}"
+                                            data-title="هل أنت متأكد من حذف هذا التصنيف نهائيًا؟"
+                                            data-confirm="نعم، احذفه"
+                                            data-cancel="إلغاء">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 @empty
@@ -98,5 +98,46 @@
 @endsection
 
 @section('js')
-@include('admin.partials.sweetalert_actions')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const url = this.dataset.url;
+        const title = this.dataset.title || "هل أنت متأكد؟";
+        const confirmText = this.dataset.confirm || "نعم، احذف";
+        const cancelText = this.dataset.cancel || "إلغاء";
+
+        Swal.fire({
+            title: title,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: confirmText,
+            cancelButtonText: cancelText,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire('تم الحذف!', '', 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('حدث خطأ!', '', 'error');
+                    }
+                })
+                .catch(() => {
+                    Swal.fire('حدث خطأ!', '', 'error');
+                });
+            }
+        });
+    });
+});
+</script>
 @endsection

@@ -65,8 +65,25 @@
 						</li>
 						<li> <a href="{{ route('admin.categories.create') }}"><i class="bx bx-right-arrow-alt"></i>Create Categories</a>
 						</li>
-                        <li> <a href="{{ route('admin.categories.trashed') }}"><i class="bx bx-right-arrow-alt"></i>Create Categories</a>
+                        {{-- <li> <a href="{{ route('admin.categories.trashed') }}"><i class="bx bx-right-arrow-alt"></i>Trashed Categories</a>
+						</li> --}}
+
+					</ul>
+				</li>
+
+                <li>
+					<a href="javascript:;" class="has-arrow">
+						<div class="parent-icon"><i class='bx bx-cart'></i>
+						</div>
+						<div class="menu-title">Service</div>
+					</a>
+					<ul>
+						<li> <a href="{{ route('admin.services.index') }}"><i class="bx bx-right-arrow-alt"></i>All Services</a>
 						</li>
+						<li> <a href="{{ route('admin.services.create') }}"><i class="bx bx-right-arrow-alt"></i>Create Services</a>
+						</li>
+                        {{-- <li> <a href="{{ route('admin.services.trashed') }}"><i class="bx bx-right-arrow-alt"></i>Trashed Services</a>
+						</li> --}}
 
 					</ul>
 				</li>

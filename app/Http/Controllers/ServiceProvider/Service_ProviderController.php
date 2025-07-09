@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\ServiceProvider;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,6 +112,6 @@ public function UpdatePassword(Request $request)
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('Service_Provider.login');
+        return redirect()->route('provider.login');
 }
 }

@@ -23,21 +23,8 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $roles = ['admin', 'service_provider', 'customer'];
-        $status = ['active', 'inactive'];
+    
 
-        return [
-            'username' => $this->faker->userName(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'), // كلمة المرور الافتراضية
-            'photo' => null,
-            'phone' => $this->faker->phoneNumber(),
-            'address' => $this->faker->address(),
-            'role' => $this->faker->randomElement($roles),
-            'status' => $this->faker->randomElement($status),
-            'remember_token' => Str::random(10),
-        ];
     }
 
     public function provider()

@@ -24,6 +24,7 @@
 
 					</div>
 				</div>
+                @include('admin.msg')
 				<!--end breadcrumb-->
 				<div class="container">
 					<div class="main-body">
@@ -34,9 +35,22 @@
 										<div class="d-flex flex-column align-items-center text-center">
 											<img src="{{ asset(($admin->photo ?? 'upload/admin_images/no_image.jpg')) }}" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
 											<div class="mt-3">
-												<h4>{{ $admin->name }}</h4>
-												<p class="text-secondary mb-1">{{ $admin->email }}</p>
-												<p class="text-muted font-size-sm">{{ $admin->status }}</p>
+												<h4>{{ $admin->username }}</h4>
+												<p class="text-secondary ">{{ $admin->email }}</p>
+                                                <p class="text-white font-size-sm p-2 rounded
+                                                    @if($admin->role === 'admin') badge bg-info
+                                                    @elseif($admin->role === 'service_provider') badge bg-primary
+                                                    @else badge bg-secondary
+                                                    @endif">
+                                                    {{ $admin->role }}
+                                                </p>
+                                                <p class="font-size-sm p-2 rounded
+                                                    @if($admin->status === 'active') badge rounded-pill bg-light-success text-success w-100
+                                                    @elseif($admin->status === 'inactive') badge rounded-pill bg-light-success text-success w-100
+                                                    @else badge rounded-pill bg-light-success text-success w-100
+                                                    @endif">
+                                                    {{ $admin->status }}
+                                                </p>
 
 											</div>
 										</div>

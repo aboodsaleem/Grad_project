@@ -3,110 +3,109 @@
 namespace App\Http\Controllers\ServiceProvider;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProviderServiceController extends Controller
 {
-   public function index()
-{
-    // ✅ عرض جميع الخدمات بدون شرط على provider_id
-    $services = Service::with(['category', 'provider'])
-        ->latest()
-        ->paginate(10);
+    // عرض كل الخدمات الخاصة بمزود الخدمة فقط
+    public function index()
+    {
+        $providerId = Auth::id();
+        $services = Service::where('service_provider_id', $providerId)->paginate(10);
+        return view('provider.services.index', compact('services'));
+    }
 
-    return view('service_provider.services.index', compact('services'));
-}
-
+    // نموذج إضافة خدمة جديدة
     public function create()
     {
-        $categories = Category::all();
-        return view('service_provider.services.create', compact('categories'));
+        return view('provider.services.create');
     }
 
+    // تخزين خدمة جديدة
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'title' => 'required|string|max:255',
+        $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'photo' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image',
+            // غيرها من القواعد حسب الحاجة
         ]);
 
-        if ($request->hasFile('photo')) {
-            $fn = hexdec(uniqid()) . '.' . $request->photo->extension();
-            $request->photo->move(public_path('upload/services'), $fn);
-            $data['photo'] = 'upload/services/' . $fn;
+        $serviceData = $request->only(['name', 'description', 'price']);
+        $serviceData['service_provider_id'] = Auth::id();
+
+        // معالجة رفع الصورة إذا موجودة
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('uploads/services'), $filename);
+            $serviceData['image'] = 'uploads/services/' . $filename;
         }
 
-        $data['provider_id'] = auth()->id(); // مزود الخدمة الحالي
+        Service::create($serviceData);
 
-        Service::create($data);
-
-        return redirect()->route('provider.services.index')->with('success', 'Service created.');
+        return redirect()->route('provider.services.index')->with('success', 'تم إضافة الخدمة بنجاح');
     }
 
-    public function edit(Service $service)
+    // نموذج تعديل الخدمة
+    public function edit($id)
     {
-        $user = auth()->user();
+        $providerId = Auth::id();
+        $service = Service::where('id', $id)->where('service_provider_id', $providerId)->firstOrFail();
 
-        if ($service->provider_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $categories = Category::all();
-        return view('service_provider.services.edit', compact('service', 'categories'));
+        return view('provider.services.edit', compact('service'));
     }
 
-    public function update(Request $request, Service $service)
+    // تحديث الخدمة
+    public function update(Request $request, $id)
     {
-        $user = auth()->user();
+        $providerId = Auth::id();
+        $service = Service::where('id', $id)->where('service_provider_id', $providerId)->firstOrFail();
 
-        if ($service->provider_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $data = $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'title' => 'required|string|max:255',
+        $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric',
-            'photo' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image',
         ]);
 
-        if ($request->hasFile('photo')) {
-            if ($service->photo && file_exists(public_path($service->photo))) {
-                unlink(public_path($service->photo));
+        $service->name = $request->name;
+        $service->description = $request->description;
+        $service->price = $request->price;
+
+        if ($request->hasFile('image')) {
+            // حذف الصورة القديمة إن وجدت
+            if ($service->image && file_exists(public_path($service->image))) {
+                unlink(public_path($service->image));
             }
-            $fn = hexdec(uniqid()) . '.' . $request->photo->extension();
-            $request->photo->move(public_path('upload/services'), $fn);
-            $data['photo'] = 'upload/services/' . $fn;
+
+            $image = $request->file('image');
+            $filename = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('uploads/services'), $filename);
+            $service->image = 'uploads/services/' . $filename;
         }
 
-        $service->update($data);
+        $service->save();
 
-        return redirect()->route('provider.services.index')->with('success', 'Service updated.');
+        return redirect()->route('provider.services.index')->with('success', 'تم تحديث الخدمة بنجاح');
     }
 
+    // حذف الخدمة
     public function destroy($id)
     {
-        $service = Service::findOrFail($id);
-        $user = auth()->user();
+        $providerId = Auth::id();
+        $service = Service::where('id', $id)->where('service_provider_id', $providerId)->firstOrFail();
 
-        if ($service->provider_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        if ($service->photo && file_exists(public_path($service->photo))) {
-            unlink(public_path($service->photo));
+        // حذف الصورة من السيرفر
+        if ($service->image && file_exists(public_path($service->image))) {
+            unlink(public_path($service->image));
         }
 
         $service->delete();
 
-        return redirect()->route('provider.services.index')->with('success', 'Service deleted successfully.');
+        return redirect()->route('provider.services.index')->with('success', 'تم حذف الخدمة بنجاح');
     }
 }

@@ -11,12 +11,22 @@ class Booking extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'service_id', 'booking_date', 'status', 'notes'
+        'booking_date',
+        'booking_time',
+        'status',
+        'service_id',
+        'service_provider_id',
+        'user_id',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class); // العميل
+        return $this->belongsTo(User::class);
+    }
+
+    public function serviceProvider()
+    {
+        return $this->belongsTo(ServiceProvider::class);
     }
 
     public function service()
@@ -24,9 +34,8 @@ class Booking extends Model
         return $this->belongsTo(Service::class);
     }
 
-    public function payment()
+    public function review()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Review::class);
     }
-
 }

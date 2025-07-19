@@ -2,26 +2,29 @@
 
 namespace App\Models;
 
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable,SoftDeletes ;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'username',
         'email',
-        'password',
-        'photo',
         'phone',
-        'address',
+        'password',
+        'profile_image',
         'role',
-        'status',
     ];
 
     protected $hidden = [
@@ -29,41 +32,28 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    // الخدمات التي يقدمها مزود الخدمة
-    public function services()
+    // علاقات
+public function serviceProvider()
     {
-        return $this->hasMany(Service::class, 'provider_id');
+        return $this->hasOne(ServiceProvider::class);
     }
 
-    // الحجوزات التي قام بها العميل
     public function bookings()
     {
-        return $this->hasMany(Booking::class, 'user_id');
+        return $this->hasMany(Booking::class);
     }
 
-    // التقييمات التي قام بها العميل
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    // المدفوعات التي قام بها المستخدم (عميل)
-    public function payment()
-    {
-        return $this->hasMany(Payment::class, 'user_id');
-    }
-
-    // التوافر الخاص بمزود الخدمة
-    public function availabilities()
-    {
-        return $this->hasMany(Availability::class, 'provider_id');
-    }
-
-    // static public function getRecord() {
-    //     $return = self::select('users')->orderBy('id','desc');
-    // }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 }

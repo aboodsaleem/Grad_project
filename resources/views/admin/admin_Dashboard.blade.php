@@ -71,6 +71,8 @@
 	<script src="{{ asset('adminbackend/assets/plugins/sparkline-charts/jquery.sparkline.min.js') }}"></script>
 	<script src="{{ asset('adminbackend/assets/plugins/jquery-knob/excanvas.js') }}"></script>
 	<script src="{{ asset('adminbackend/assets/plugins/jquery-knob/jquery.knob.js') }}"></script>
+    	<script src="{{ asset('adminbackend/assets/plugins/apexcharts-bundle/js/apexcharts.min.js') }}"></script>
+
 	  <script>
 		  $(function() {
 			  $(".knob").knob();
@@ -79,7 +81,10 @@
 	  <script src="{{ asset('adminbackend/assets/js/index.js') }}"></script>
 	<!--app JS-->
 	<script src="{{ asset('adminbackend/assets/js/app.js') }}"></script>
+	<script src="{{ asset('adminbackend/assets/js/dashboard-alternate.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
 
 
 
@@ -108,6 +113,9 @@
 </script>
 
 @yield('js')
+<script type="text/javascript">
+
+</script>
 </body>
 
 </html>

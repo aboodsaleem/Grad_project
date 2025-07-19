@@ -30,7 +30,7 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div class="card">
-                                    <form>
+                                <form>
                                         <div class="card-body">
                                             <div class="row mb-3">
     <div class="col-sm-3">
@@ -38,8 +38,8 @@
     </div>
     <div class="col-sm-9 text-secondary">
         <img id="showImage" class="img-thumbnail rounded-circle shadow"
-             src="{{ asset($dataUsers->photo ?? 'upload/no_img.jpg') }}"
-             alt="Profile Image" width="120" height="120">
+            src="{{ asset($users->photo ?? 'upload/no_img.jpg') }}"
+            alt="Profile Image" width="120" height="120">
     </div>
 </div>
 
@@ -49,7 +49,7 @@
                                                     <h6 class="mb-0">Username</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="text" name="username" class="form-control" value="{{ $dataUsers->username }}" />
+                                                    <input type="text" name="username" class="form-control" value="{{ $users->username }}" />
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
@@ -57,7 +57,7 @@
                                                     <h6 class="mb-0">Email</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="email" name="email" class="form-control" value="{{ $dataUsers->email }}" />
+                                                    <input type="email" name="email" class="form-control" value="{{ $users->email }}" />
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
@@ -65,7 +65,7 @@
                                                     <h6 class="mb-0">Phone</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="text" name="phone" class="form-control" value="{{ $dataUsers->phone }}" />
+                                                    <input type="text" name="phone" class="form-control" value="{{ $users->phone }}" />
                                                 </div>
                                             </div>
                                             <div class="row mb-3">
@@ -73,11 +73,11 @@
                                                     <h6 class="mb-0">Address</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <input type="text" name="address" class="form-control" value="{{ $dataUsers->address }}" />
+                                                    <input type="text" name="address" class="form-control" value="{{ $users->address }}" />
                                                 </div>
                                             </div>
 
-                                                <a href="{{ route('admin.users.list', $dataUsers->id) }}" class="btn btn-primary">Back</a>
+                                                <a href="{{ route('admin.users.list', $users->id) }}" class="btn btn-primary">Back</a>
                                         </div>
                                     </div>
                             </form>

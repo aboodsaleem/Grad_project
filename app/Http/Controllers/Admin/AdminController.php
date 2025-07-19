@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Mail\RegisteredMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -101,21 +104,13 @@ public function AdminUpdatePassword(Request $request)
         'password' => Hash::make($request->new_password),
     ]);
 
-    return back()->with('status', 'تم تغيير كلمة المرور بنجاح.');
+
+
+    return redirect()
+        ->route('admin.profile')
+        ->with('msg', 'Change Password successfully')
+        ->with('type', 'success');
 }
-
-public function admin_users(Request $request){
-    $dataUsers = User::withTrashed()->orderBy('id', 'desc')->paginate(10);
-    return view('admin.users.list', compact('dataUsers'));
-}
-
-
-public function admin_users_view($id)
-{
-    $dataUsers = User::findOrFail($id);
-    return view('admin.users.view', compact('dataUsers'));
-}
-
 
 
 public function AdminDestroy(Request $request){
@@ -128,42 +123,4 @@ public function AdminDestroy(Request $request){
         return redirect()->route('admin.login');
 }
 
-// حذف مؤقت (Soft Delete)
-public function softDelete($id)
-{
-    $user = User::findOrFail($id);
-    $user->delete();
-    return redirect()->route('admin.users.list')->with('success', 'User temporarily deleted');
-}
-
-// استرجاع مستخدم
-public function restore($id)
-{
-    $user = User::withTrashed()->findOrFail($id);
-    $user->restore();
-    return redirect()->route('admin.users.list')->with('success', 'User restored successfully.');
-}
-
-// حذف نهائي (Force Delete)
-public function forceDelete($id)
-{
-    $user = User::withTrashed()->findOrFail($id);
-
-    // حذف الصورة من السيرفر إذا وجدت
-    if ($user->photo && file_exists(public_path($user->photo))) {
-        unlink(public_path($user->photo));
-    }
-
-    $user->forceDelete();
-    return redirect()->route('admin.users.list')->with('success', 'This user has been permanently deleted.');
-}
-
-public function trashed()
-{
-    $trashedUsers = User::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
-    return view('admin.users.trashed', compact('trashedUsers'));
-}
-
-
-// End Mehtod
 }

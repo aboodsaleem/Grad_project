@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('availabilities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('provider_id')->constrained('users')->onDelete('cascade'); // مزود الخدمة
-            $table->date('date');
+            $table->enum('day_of_week', ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']);
             $table->time('start_time');
             $table->time('end_time');
+            $table->foreignId('service_provider_id')->constrained('service_providers')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

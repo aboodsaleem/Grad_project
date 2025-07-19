@@ -62,7 +62,7 @@
                                 <form action="{{ route('admin.services.destroy', $service->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-warning delete-btn"
+                                    <button type="button" class="btn btn-danger btn-sm delete-btn"
                                         data-url="{{ route('admin.services.destroy', $service->id) }}"
                                         data-title="هل أنت متأكد من حذف الخدمة؟"
                                         data-confirm="نعم، احذف"

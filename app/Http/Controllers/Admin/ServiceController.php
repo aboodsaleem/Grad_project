@@ -1,119 +1,196 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Service;
-use App\Models\Category;
+use App\Models\ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
+    // عرض الخدمات حسب دور المستخدم
     public function index()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($user->role == 'admin') {
-            $services = Service::with(['category', 'provider'])->latest()->paginate(10);
+            // الأدمن يشوف كل الخدمات
+            $services = Service::orderBy('id', 'desc')->paginate(10);
         } elseif ($user->role == 'service_provider') {
-            $services = Service::with(['category', 'provider'])
-                ->where('provider_id', $user->id)
-                ->latest()
-                ->paginate(10);
+            // مزود الخدمة يشوف خدماته فقط
+            $serviceProvider = ServiceProvider::where('user_id', $user->id)->first();
+            if ($serviceProvider) {
+                $services = Service::where('service_provider_id', $serviceProvider->id)
+                    ->orderBy('id', 'desc')
+                    ->paginate(10);
+            } else {
+                $services = collect(); // مجموعة فارغة
+            }
         } else {
-            $services = collect();
+            // العميل يشوف الخدمات المتوفرة فقط (مثلا الحالة approved)
+            $services = Service::where('status', 'approved')->orderBy('id', 'desc')->paginate(10);
         }
 
-        return view('admin.services.index', compact('services'));
+        return view('services.index', compact('services'));
     }
 
+    // صفحة إنشاء خدمة جديدة (لمزود الخدمة أو الأدمن)
     public function create()
     {
-        $categories = Category::all();
-        return view('admin.services.create', compact('categories'));
+        return view('services.create');
     }
 
-    public function store(Request $req)
+    // حفظ خدمة جديدة
+    public function store(Request $request)
     {
-        $data = $req->validate([
-            'category_id' => 'required|exists:categories,id',
+        $user = Auth::user();
+
+        $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'price' => 'required|numeric',
-            'photo' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'nullable|in:pending,approved,rejected', // الأدمن يمكنه التحكم بالحالة
         ]);
 
-        if ($req->hasFile('photo')) {
-            $fn = hexdec(uniqid()) . '.' . $req->photo->extension();
-            $req->photo->move(public_path('upload/services'), $fn);
-            $data['photo'] = 'upload/services/' . $fn;
+        $service = new Service();
+        $service->title = $request->title;
+        $service->description = $request->description;
+        $service->price = $request->price;
+
+        // حدد مزود الخدمة حسب الدور
+        if ($user->role == 'service_provider') {
+            $serviceProvider = ServiceProvider::where('user_id', $user->id)->first();
+            if (!$serviceProvider) {
+                return redirect()->back()->with('error', 'مزود الخدمة غير موجود');
+            }
+            $service->service_provider_id = $serviceProvider->id;
+            $service->status = 'pending'; // مزود الخدمة لا يقرر حالة الخدمة
+        } elseif ($user->role == 'admin') {
+            // إذا الأدمن يحدد مزود الخدمة وحالة الخدمة
+            $service->service_provider_id = $request->service_provider_id ?? null;
+            $service->status = $request->status ?? 'approved';
         }
 
-        $data['provider_id'] = auth()->id();
+        // رفع الصورة إذا موجودة
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
 
-        Service::create($data);
+            $uploadPath = public_path('uploads/services/');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
 
-        return redirect()->route('admin.services.index')->with('success', 'Service created.');
+            $image->move($uploadPath, $name_gen);
+
+            $service->image = 'uploads/services/' . $name_gen;
+        }
+
+        $service->save();
+
+        return redirect()->route('services.index')->with('success', 'تم إضافة الخدمة بنجاح');
     }
 
-    public function edit(Service $service)
+    // عرض تفاصيل الخدمة
+    public function show($id)
     {
-        $user = auth()->user();
-
-        // تحقق إذا المزود يملك الخدمة أو الأدمن
-        if ($user->role == 'service_provider' && $service->provider_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $categories = Category::all();
-        return view('admin.services.edit', compact('service', 'categories'));
+        $service = Service::findOrFail($id);
+        return view('services.show', compact('service'));
     }
 
-    public function update(Request $req, Service $service)
+    // صفحة تعديل الخدمة (لمزود الخدمة أو الأدمن)
+    public function edit($id)
     {
-        $user = auth()->user();
+        $service = Service::findOrFail($id);
 
-        if ($user->role == 'service_provider' && $service->provider_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
+        // تحقق من الصلاحيات: الأدمن يشوف كل الخدمات، مزود الخدمة يشوف خدماته فقط
+        $user = Auth::user();
+        if ($user->role == 'service_provider') {
+            $serviceProvider = ServiceProvider::where('user_id', $user->id)->first();
+            if ($service->service_provider_id != $serviceProvider->id) {
+                abort(403, 'ليس لديك صلاحية تعديل هذه الخدمة');
+            }
         }
 
-        $data = $req->validate([
-            'category_id' => 'required|exists:categories,id',
+        return view('services.edit', compact('service'));
+    }
+
+    // تحديث الخدمة
+    public function update(Request $request, $id)
+    {
+        $service = Service::findOrFail($id);
+
+        $user = Auth::user();
+        if ($user->role == 'service_provider') {
+            $serviceProvider = ServiceProvider::where('user_id', $user->id)->first();
+            if ($service->service_provider_id != $serviceProvider->id) {
+                abort(403, 'ليس لديك صلاحية تعديل هذه الخدمة');
+            }
+        }
+
+        $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'price' => 'required|numeric',
-            'photo' => 'nullable|image|max:2048',
-            'status' => 'required|in:active,inactive',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'nullable|in:pending,approved,rejected',
         ]);
 
-        if ($req->hasFile('photo')) {
-            if ($service->photo && file_exists(public_path($service->photo))) unlink(public_path($service->photo));
-            $fn = hexdec(uniqid()) . '.' . $req->photo->extension();
-            $req->photo->move(public_path('upload/services'), $fn);
-            $data['photo'] = 'upload/services/' . $fn;
+        $service->title = $request->title;
+        $service->description = $request->description;
+        $service->price = $request->price;
+
+        // الأدمن فقط يمكنه تعديل الحالة
+        if ($user->role == 'admin' && $request->has('status')) {
+            $service->status = $request->status;
         }
 
-        $service->update($data);
+        // رفع صورة جديدة إذا أرسلت، وحذف القديمة
+        if ($request->hasFile('image')) {
+            if ($service->image && file_exists(public_path($service->image))) {
+                unlink(public_path($service->image));
+            }
 
-        return redirect()->route('admin.services.index')->with('success', 'Service updated.');
+            $image = $request->file('image');
+            $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+
+            $uploadPath = public_path('uploads/services/');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $image->move($uploadPath, $name_gen);
+
+            $service->image = 'uploads/services/' . $name_gen;
+        }
+
+        $service->save();
+
+        return redirect()->route('services.index')->with('success', 'تم تحديث الخدمة بنجاح');
     }
 
+    // حذف الخدمة
     public function destroy($id)
     {
         $service = Service::findOrFail($id);
-        $user = auth()->user();
 
-        if ($user->role == 'service_provider' && $service->provider_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
+        $user = Auth::user();
+        if ($user->role == 'service_provider') {
+            $serviceProvider = ServiceProvider::where('user_id', $user->id)->first();
+            if ($service->service_provider_id != $serviceProvider->id) {
+                abort(403, 'ليس لديك صلاحية حذف هذه الخدمة');
+            }
         }
 
-        if ($service->photo && file_exists(public_path($service->photo))) {
-            unlink(public_path($service->photo));
+        // حذف الصورة من المجلد إذا موجودة
+        if ($service->image && file_exists(public_path($service->image))) {
+            unlink(public_path($service->image));
         }
 
         $service->delete();
 
-        return redirect()->route('admin.services.index')->with('success', 'Service deleted successfully.');
+        return redirect()->route('services.index')->with('success', 'تم حذف الخدمة بنجاح');
     }
 }

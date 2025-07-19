@@ -26,24 +26,54 @@
             </nav>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <div class="d-flex align-items-center mb-3">
+    <a href="{{ route('admin.users.list', ['role' => 'admin']) }}" class="btn btn-info">
+        Admin <span class="badge bg-dark">{{ $countAdmins }}</span>
+    </a>&nbsp;&nbsp;
+
+    <a href="{{ route('admin.users.list', ['role' => 'service_provider']) }}" class="btn btn-warning">
+        Service Provider <span class="badge bg-dark">{{ $countProviders }}</span>
+    </a>&nbsp;&nbsp;
+
+    <a href="{{ route('admin.users.list', ['role' => 'customer']) }}" class="btn btn-secondary">
+        Customer <span class="badge bg-dark">{{ $countCustomers }}</span>
+    </a>&nbsp;&nbsp;
+
+    <a href="{{ route('admin.users.list', ['status' => 'active']) }}" class="btn btn-success">
+        Active <span class="badge bg-dark">{{ $countActive }}</span>
+    </a>&nbsp;&nbsp;
+
+    <a href="{{ route('admin.users.list', ['status' => 'inactive']) }}" class="btn btn-danger">
+        InActive <span class="badge bg-dark">{{ $countInactive }}</span>
+    </a>&nbsp;&nbsp;
+
+    <a href="{{ route('admin.users.list') }}" class="btn btn-primary">
+        Total <span class="badge bg-dark">{{ $countTotal }}</span>
+    </a>&nbsp;&nbsp;
+</div>
+
+        </div>
+    </div>
+
 
     <div class="row">
         <div class="col-xl-12 mx-auto">
             <div class="card radius-10">
                 <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div><h5 class="mb-0">Users List</h5></div>
-                        <div class="ms-auto">
-                            <a href="{{ route('admin.users.trashed') }}" class="btn btn-warning btn-sm">
-                                <i class="fas fa-trash"></i> Trashed
-                            </a>
-                        </div>
+                <div class="d-flex align-items-center">
+                    <div><h5 class="">Users List</h5></div>
+                    <div class="ms-auto mb-2">
+                        <a href="{{ route('admin.users.trashed') }}" class="btn btn-warning">
+                            <i class="fas fa-trash"></i> Trashed
+                        </a>
+                        <a href="{{ route('admin.users.add') }}" class="btn btn-primary">Add User</a>
                     </div>
+                </div>
+                @include('admin.msg')
 
-                    @include('admin.msg')
-                    <hr>
-
-                    <div class="table-responsive" style="overflow-x: auto;">
+                <div class="table-responsive" style="overflow-x: auto;">
                         <table class="table table-bordered table-hover table-striped align-middle text-center mb-0" style="white-space: nowrap;">
                             <thead class="table-dark">
                                 <tr>
@@ -60,41 +90,45 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dataUsers as $dataUser)
+                                @foreach ($users as $user)
                                     <tr>
-                                        <th>{{ $dataUser->id }}</th>
-                                        <td>{{ $dataUser->username }}</td>
-                                        <td>{{ $dataUser->email }}</td>
+                                        <th>{{ $user->id }}</th>
+                                        <td>{{ $user->username }}</td>
+                                        <td>{{ $user->email }}</td>
                                         <td>
-                                            <img src="{{ asset($dataUser->photo ?? 'upload/no_img.jpg') }}" class="img-thumbnail rounded-circle shadow" style="width:50px; height:50px;" alt="">
+                                            <img src="{{ asset($user->photo ?? 'upload/no_img.jpg') }}" class="img-thumbnail rounded-circle shadow" style="width:50px; height:50px;" alt="">
                                         </td>
-                                        <td>{{ $dataUser->phone }}</td>
-                                        <td>{{ $dataUser->address }}</td>
+                                        <td>{{ $user->phone }}</td>
+                                        <td>{{ $user->address }}</td>
                                         <td>
-                                            @if ($dataUser->role == 'admin')
+                                            @if ($user->role == 'admin')
                                                 <span class="badge bg-info">Admin</span>
-                                            @elseif ($dataUser->role == 'service_provider')
+                                            @elseif ($user->role == 'service_provider')
                                                 <span class="badge bg-success">Service Provider</span>
-                                            @elseif ($dataUser->role == 'customer')
+                                            @elseif ($user->role == 'customer')
                                                 <span class="badge bg-primary">Customer</span>
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($dataUser->status == 'active')
+                                            @if ($user->status == 'active')
                                                 <div class="badge rounded-pill bg-light-success text-success w-100">Active</div>
                                             @else
                                                 <div class="badge rounded-pill bg-light-danger text-danger w-100">Inactive</div>
                                             @endif
                                         </td>
-                                        <td>{{ $dataUser->created_at ? $dataUser->created_at->format('d-m-Y') : '-' }}</td>
+                                        <td>{{ $user->created_at ? $user->created_at->format('d-m-Y') : '-' }}</td>
                                         <td>
-                                            <a class="btn btn-sm btn-info mb-1" href="{{ route('admin.users.view', $dataUser->id) }}">
+                                            <a class="btn btn-sm btn-info" href="{{ route('admin.users.view', $user->id) }}">
                                                 <i class="fa fa-eye"></i>
                                             </a>
 
-                                            @if (is_null($dataUser->deleted_at))
-                                                <button type="button" class="btn btn-sm btn-warning mb-1 delete-btn"
-                                                    data-url="{{ route('admin.users.softDelete', $dataUser->id) }}"
+                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-primary " title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            @if (is_null($user->deleted_at))
+                                                <button type="button" class="btn btn-sm btn-warning delete-btn"
+                                                    data-url="{{ route('admin.users.softDelete', $user->id) }}"
                                                     data-title="هل أنت متأكد من الحذف المؤقت؟"
                                                     data-confirm="نعم، احذفه"
                                                     data-cancel="إلغاء"
@@ -102,16 +136,16 @@
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             @else
-                                                <button type="button" class="btn btn-sm btn-success mb-1 restore-btn"
-                                                    data-url="{{ route('admin.users.restore', $dataUser->id) }}"
+                                                <button type="button" class="btn btn-sm btn-success restore-btn"
+                                                    data-url="{{ route('admin.users.restore', $user->id) }}"
                                                     data-title="هل تريد استرجاع هذا المستخدم؟"
                                                     data-confirm="نعم، استرجاع"
                                                     data-cancel="إلغاء">
                                                     <i class="fas fa-undo"></i>
                                                 </button>
 
-                                                <button type="button" class="btn btn-sm btn-danger mb-1 delete-btn"
-                                                    data-url="{{ route('admin.users.forceDelete', $dataUser->id) }}"
+                                                <button type="button" class="btn btn-sm btn-danger delete-btn"
+                                                    data-url="{{ route('admin.users.forceDelete', $user->id) }}"
                                                     data-title="هل تريد الحذف النهائي؟"
                                                     data-confirm="نعم، احذفه نهائيًا"
                                                     data-cancel="إلغاء"
@@ -127,7 +161,7 @@
                     </div>
 
                     <div class="mt-3" style="float: right;">
-                        {{ $dataUsers->links() }}
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>

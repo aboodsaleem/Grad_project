@@ -11,14 +11,14 @@ class Availability extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'provider_id',
-        'date',
+        'day_of_week',
         'start_time',
-        'end_time'
+        'end_time',
+        'service_provider_id',
     ];
 
-    public function provider()
+    public function serviceProvider()
     {
-        return $this->belongsTo(User::class, 'provider_id'); // مزود الخدمة
+        return $this->belongsTo(ServiceProvider::class);
     }
 }

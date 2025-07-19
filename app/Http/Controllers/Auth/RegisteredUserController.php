@@ -28,24 +28,35 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:customer,service_provider',
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => Hash::make($request->password),
+            'status' => 'inactive',
+            'role' => $request->input('role','customer'),
         ]);
 
         event(new Registered($user));
-
+        $notification = [
+        'message' =>  'log in success',
+        'alert-type' => 'success'
+       ];
         Auth::login($user);
+    if ($user->role === 'customer') {
+        return redirect()->route('customer.dashboard')->with($notification);
+    } elseif ($user->role === 'service_provider') {
+        return redirect()->route('Service_Provider.dashboard')->with($notification);
+    }
 
-        return redirect(RouteServiceProvider::HOME);
     }
 }

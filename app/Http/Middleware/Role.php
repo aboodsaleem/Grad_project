@@ -16,9 +16,14 @@ class Role
     public function handle(Request $request, Closure $next ,$role): Response
     {
 
-    if ($request->user()->role !== $role) {
-        return redirect('/dashboard'); // توجيه المستخدم غير المصرح له
-    }
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        // إذا لم يكن له الدور المناسب
+        if (auth()->user()->role !== $role) {
+            abort(403, 'Unauthorized action.');
+        }
         return $next($request);
     }
 }

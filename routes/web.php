@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Service_ProviderController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('frontend.index');
 });
 
 Route::get('/dashboard', function () {
@@ -36,14 +37,19 @@ Route::get('/admin/login',  [AdminController::class , 'AdminLogin'])->name('admi
 
 Route::middleware(['auth', 'role:service_provider'])->controller(Service_ProviderController::class)->group(function () {
     Route::get('/service_provider/dashboard', 'service_providerDashboard')->name('Service_Provider.dashboard');
-    Route::get('/service_provider/profile','service_providerProfile')->name('Service_Provider.profile');
-    Route::post('/service_provider/update/','updateProfile')->name('Service_Provider.update');
-    Route::get('service_provider/change/password', 'ChangePassword')->name('Service_Provider.change.password');
-    Route::post('/service_provider/update-password' , 'UpdatePassword')->name('Service_Provider.update.password');
+    Route::post('/service_provider/update/{id}','updateProfile')->name('Service_Provider.update');
+    Route::post('/service_provider/update-password/{id}' , 'UpdatePassword')->name('Service_Provider.update.password');
+    Route::post('/service_provider/update-email/{id}' , 'Updateemail')->name('Service_Provider.update.email');
+    Route::post('/service_provider/update-phone/{id}' , 'Updatephone')->name('Service_Provider.update.phone');
     Route::get('/service_provider/logout',  'Service_ProviderDestroy')->name('Service_Provider.logout');
 });
-Route::get('/service_provider/login',  [Service_ProviderController::class , 'service_providerlogin'])->name('Service_Provider.login');
 
+Route::middleware(['auth', 'role:customer'])->controller(CustomerController::class)->group(function () {
+    Route::get('/customer/dashboard', 'customerDashboard')->name('customer.dashboard');
+    Route::post('/customer/update/','customerProfileupdate')->name('customer.update');
+    Route::post('customer/update-password' , 'customerUpdatePassword')->name('customer.update.password');
+    Route::get('/customer/logout',  'customerDestroy')->name('customer.logout');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

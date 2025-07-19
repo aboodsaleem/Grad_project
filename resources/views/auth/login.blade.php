@@ -1,47 +1,105 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Home Services</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css"
+    />
+    <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('frontend/css/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('frontend/css/auth.css') }}" />
+  </head>
+  <body>
+    <div class="auth-container bg-white text-center w-100 position-relative">
+      <h1
+        class="logo d-flex align-items-center justify-content-center gap-3 fw-bold fs-5"
+      >
+        <i class="fas fa-home"></i>
 
-    <form method="POST" action="{{ route('login') }}">
+        <span>Home Booking <span>Services</span></span>
+      </h1>
+      <div class="auth-card">
+        <h2 class="text-dark fw-bold">Login</h2>
+    <form  method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input
+              type="text"
+              placeholder="Enter your Email"
+              name="email"
+              class="w-100 @error('email') is-invalid @enderror"
+            />
+            @error('email')
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              class="w-100 @error('password') is-invalid @enderror"
+            />
+            @error('password')
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
+          </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{{ route('register') }}">Register here</a></p>
+        <!-- <p><button class="btn btn-link text-decoration-none">Forgot Password?</button></p> -->
+            <p>
+                <a href="{{ route('password.request') }}" class="btn btn-link forget-btn">
+                 Forgot Password?
                 </a>
-            @endif
+            </p>
+      </div>
+    </div>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+
+
+    <script src="{{ asset('frontend/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+    <script>
+      const resetBySelect = document.getElementById("resetBy");
+      const choices = new Choices(resetBySelect, {
+        searchEnabled: false,
+        itemSelectText: "",
+      });
+      const notyf = new Notyf();
+
+      const inputCodes = document.querySelectorAll(".verf-code-item input");
+
+      // For Verfication Code
+      inputCodes.forEach((input, index) => {
+        input.addEventListener("input", function (e) {
+          const value = e.target.value;
+          if (value && index < inputCodes.length - 1)
+            inputCodes[index + 1].focus();
+        });
+
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Backspace") {
+            if (!e.target.value && index > 0) {
+              inputCodes[index - 1].focus();
+              inputCodes[index - 1].value = "";
+              e.preventDefault();
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

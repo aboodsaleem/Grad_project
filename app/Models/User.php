@@ -33,10 +33,11 @@ class User extends Authenticatable
     ];
 
     // علاقات
-public function serviceProvider()
-    {
-        return $this->hasOne(ServiceProvider::class);
-    }
+public function services()
+{
+    return $this->hasMany(Service::class, 'service_provider_id');
+}
+
 
     public function bookings()
     {

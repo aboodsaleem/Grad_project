@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('service_providers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('description')->nullable();
             $table->string('certificate')->nullable();
             $table->integer('experience_years')->nullable();

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model
 {
-    use HasFactory,  SoftDeletes;
+    use HasFactory;
 
     protected $table = 'services';
     protected $fillable = [
@@ -21,9 +21,10 @@ class Service extends Model
     ];
 
     public function serviceProvider()
-    {
-        return $this->belongsTo(ServiceProvider::class);
-    }
+{
+    return $this->belongsTo(User::class, 'service_provider_id');
+}
+
 
     public function bookings()
     {

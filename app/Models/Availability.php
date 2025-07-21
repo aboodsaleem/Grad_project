@@ -18,7 +18,8 @@ class Availability extends Model
     ];
 
     public function serviceProvider()
-    {
-        return $this->belongsTo(ServiceProvider::class);
-    }
+{
+    return $this->belongsTo(User::class, 'service_provider_id');
+}
+
 }

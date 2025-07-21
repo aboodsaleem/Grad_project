@@ -27,6 +27,85 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">
+                        Search Users
+                    </h6>
+                    <form method="GET" action="{{ route('admin.users.list') }}">
+                        <div class="row">
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">ID</label>
+                                    <input type="text" class="form-control" name="id" placeholder="Enter ID">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">User Name</label>
+                                    <input type="text" class="form-control" name="username" placeholder="Enter User Name">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" placeholder="Enter Email">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Phone</label>
+                                    <input type="number" class="form-control" name="phone" placeholder="Enter Phone Number">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Website</label>
+                                    <input type="text" class="form-control" name="address" placeholder="Enter Website">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Role</label>
+                                    <select class="form-control" name="role" >
+                                        <option value="">Select Role</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="service_provider">Service Provider</option>
+                                        <option value="customer">Customer</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="mb-3">
+                                    <label for="" class="form-label">Status</label>
+                                    <select class="form-control" name="status">
+                                        <option value="">Select Status</option>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">InActive</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                        <a href="" class="btn btn-danger">Reset</a>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
         <div class="col">
             <div class="d-flex align-items-center mb-3">
     <a href="{{ route('admin.users.list', ['role' => 'admin']) }}" class="btn btn-info">

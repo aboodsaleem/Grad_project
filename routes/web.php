@@ -58,7 +58,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('email/compose', [EmailController::class, 'email_compose'])->name('email_compose');
 
     // خدمات الأدمن: رؤية وتعديل وحذف (لا يوجد إنشاء)
-    Route::resource('services', AdminServiceController::class)->except(['create', 'store', 'show']);
+    Route::resource('services', AdminServiceController::class);
 
     // الحجوزات: فقط عرض، حذف، تفصيل
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'destroy']);

@@ -134,4 +134,65 @@ public function AdminDestroy(Request $request){
         return redirect()->route('admin.login');
 }
 
+// End Mehtod
+public function Inactiveprovider(){
+        $inActiveprovider = User::where('status','inactive')->where('role','service_provider')->latest()->get();
+        return view('admin.serviceprovider_setup.inactive',compact('inActiveprovider'));
+}
+
+public function activeprovider(){
+        $Activeprovider = User::where('status','active')->where('role','service_provider')->latest()->get();
+        return view('admin.serviceprovider_setup.active',compact('Activeprovider'));
+}
+// End Mehtod
+
+public function InactiveDetails($id)
+{
+    $inactive = User::findOrFail($id);
+    return view('admin.serviceprovider_setup.inactive_details', compact('inactive'));
+}
+public function ActiveproviderApprove(Request $request,$id)
+{
+
+    $user = User::findOrFail($id); // جلب البائع من قاعدة البيانات
+
+    $user->update([
+        'status' => 'active' // تحديث الحالة إلى نشط
+    ]);
+
+    // إنشاء رسالة إشعار
+    $notification = [
+        'message' => 'Vendor Activated Successfully',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()->route('admin.active.provider')->with($notification);
+}
+public function activeDetails($id)
+{
+    $active= User::findOrFail($id);
+    return view('admin.serviceprovider_setup.active_details', compact('active'));
+}
+
+public function inActiveproviderApprove(Request $request,$id)
+{
+
+    $user = User::findOrFail($id); // جلب البائع من قاعدة البيانات
+
+    $user->update([
+        'status' => 'inactive' // تحديث الحالة إلى نشط
+    ]);
+
+    // إنشاء رسالة إشعار
+    $notification = [
+        'message' => 'Vendor unActivated Successfully',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()->route('admin.inactive.provider')->with($notification);
+}
+
+
+
+
 }

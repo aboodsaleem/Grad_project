@@ -341,7 +341,7 @@
                 class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
               >
                 <img
-                  src="public/assest/ahmed.jpeg"
+                  src="{{ asset('frontend/public/assest/ahmed.jpeg') }}"
                   alt="provider-image"
                   class="provider-avatar rounded-circle object-fit-cover"
                 />
@@ -379,7 +379,7 @@
                 class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
               >
                 <img
-                  src="public/assest/anime-boy-chill-digital-art-hd-wallpaper-uhdpaper.com-284@0@j.jpg"
+                  src="{{ asset('frontend/public/assest/anime-boy-chill-digital-art-hd-wallpaper-uhdpaper.com-284@0@j.jpg') }}"
                   alt="provider-image"
                   class="provider-avatar rounded-circle object-fit-cover"
                 />
@@ -417,7 +417,7 @@
                 class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
               >
                 <img
-                  src="public/assest/DavidChen.jpg"
+                  src="{{ asset('frontend/public/assest/DavidChen.jpg') }}"
                   alt="provider-image"
                   class="provider-avatar rounded-circle object-fit-cover"
                 />
@@ -460,13 +460,22 @@
               class="profile-header bg-white d-flex align-items-center gap-20"
             >
               <img
+<<<<<<< HEAD
                 src="{{ asset($userdata->photo ?? 'upload/no_image.jpg') }}"
+=======
+                src="{{ asset(Auth::user()->photo ?? 'upload/no_image.jpg') }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 alt="Profile Image"
                 class="object-fit-cover rounded-circle profile-avatar"
               />
               <div class="profile-info">
+<<<<<<< HEAD
                 <h2>{{ $userdata->username }}</h2>
                 <p>Home Service Provider</p>
+=======
+                <h2>{{ $customer->username }}</h2>
+                <p>Customer since 2025</p>
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 <div class="d-flex gap-20 text-gray mt-10 profile-stats">
                   <span>Rating: <b>4.8</b></span>
                   <span><b>156</b> Completed Bookings</span>
@@ -488,6 +497,7 @@
                 <div class="info-grid d-grid gap-20 mt-20">
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Full Name</label>
+<<<<<<< HEAD
                     <span>{{ $userdata->username }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
@@ -509,6 +519,29 @@
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Date of Birth</label>
                     <span>{{ $userdata->date_of_birth }}</span>
+=======
+                    <span>{{ $customer->username }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Phone Number</label>
+                    <span>{{ $customer->phone }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Email</label>
+                    <span>{{ $customer->email }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">City</label>
+                    <span>{{ $customer->city }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Address</label>
+                    <span>{{ $customer->address }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Date of Birth</label>
+                    <span>{{ $customer->date_of_birth }}</span>
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   </div>
                 </div>
               </div>
@@ -910,12 +943,20 @@
               >
                 <div class="modal-image rounded text-center">
                   <img
+<<<<<<< HEAD
   src=""
   alt="provider-name"
   class="img-fluid rounded-circle"
   width="200"
   height="200"
 />
+=======
+                    src="{{ asset('frontend/public/assest/sarah.jpg') }}"
+                    alt="provider-name"
+                    class="img-fluid rounded"
+                    width="150"
+                  />
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 </div>
 
                 <div class="modal-info flex-fill">
@@ -1122,7 +1163,11 @@
             <div class="text-center">
               <div class="modal-image text-center">
                 <img
+<<<<<<< HEAD
                   src=""
+=======
+                  src="{{ asset('frontend//public/assest/6991150.jpg') }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   alt="provider-name"
                   class="rounded-circle object-fit-cover provider-image mt-2"
                   id="detailsAvatar"
@@ -1185,7 +1230,11 @@
             </div>
 
             <div class="modal-body">
+<<<<<<< HEAD
               <form action="{{ route('customer.update',$userdata->id) }}" method="POST" enctype="multipart/form-data">
+=======
+               <form action="{{ route('customer.update',$customer->id) }}" method="POST" enctype="multipart/form-data">
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 @csrf
                 <!-- Full Name -->
                 <div class="mb-3">
@@ -1196,7 +1245,11 @@
                     class="form-control"
                     id="fullName"
                     placeholder="Enter full name"
+<<<<<<< HEAD
                     value="{{ $userdata->username }}"
+=======
+                    value="{{ $customer->username }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1209,7 +1262,11 @@
                     class="form-control"
                     id="phone"
                     placeholder="+966 50 123 4567"
+<<<<<<< HEAD
                     value="{{ $userdata->phone }}"
+=======
+                    value="{{ $customer->phone }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1222,7 +1279,11 @@
                     class="form-control"
                     id="email"
                     placeholder="eissam@example.com"
+<<<<<<< HEAD
                     value="{{ $userdata->email }}"
+=======
+                    value="{{ $customer->email }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1235,7 +1296,11 @@
                     class="form-control"
                     id="city"
                     placeholder="City"
+<<<<<<< HEAD
                     value="{{ $userdata->city }}"
+=======
+                    value="{{ $customer->city }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1248,7 +1313,11 @@
                     class="form-control"
                     id="address"
                     placeholder="Address"
+<<<<<<< HEAD
                     value="{{ $userdata->address }}"
+=======
+                    value="{{ $customer->address }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1261,7 +1330,11 @@
                     class="form-control"
                     id="dob"
                     placeholder="Date Of BirthDay"
+<<<<<<< HEAD
                     value="{{ $userdata->date_of_birth }}"
+=======
+                    value="{{ $customer->date_of_birth }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1316,16 +1389,21 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="modalForm">
+              <form id="modalForm" method="POST" action="{{ route('customer.update.password',$customer->id) }}">
+                @csrf
                 <div class="form-group">
                   <label for="modalInput">Enter new value:</label>
                   <input
+                    name="new_password"
                     type="text"
                     id="modalInput"
                     class="form-control"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
                   />
+                    @error('new_password')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="mt-4 text-end">
@@ -1368,15 +1446,18 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="emailUpdateForm">
-                <div class="form-group">
+        <form id="emailUpdateForm" method="POST" action="{{ route('customer.update.email',$customer->id) }}">
+            @csrf
+            <div class="form-group">
                   <label for="modalInput">Enter new value:</label>
                   <input
+                    name="email"
                     type="text"
                     id="emailInput"
                     class="form-control emailInput"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
+                    value="{{ $customer->email}}"
                   />
                 </div>
 
@@ -1420,16 +1501,22 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="phoneUpdateForm">
+            <form id="phoneUpdateForm" method="POST" action="{{ route('customer.update.phone',$customer->id) }}">
+                @csrf
                 <div class="form-group">
                   <label for="phoneInput">Enter new value:</label>
                   <input
+                    name="phone"
                     type="text"
                     id="phoneInput"
                     class="form-control"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
+                    value="{{ $customer->phone}}"
                   />
+                @error('phone')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
                 </div>
 
                 <div class="mt-4 text-end">

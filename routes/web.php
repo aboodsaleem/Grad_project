@@ -16,6 +16,7 @@ use App\Http\Controllers\ServiceProvider\ProviderBookingController;
 use App\Http\Controllers\ServiceProvider\ProviderReviewController;
 use App\Http\Controllers\ServiceProvider\ProviderServiceController;
 use App\Http\Controllers\ServiceProvider\Service_ProviderController;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,16 +35,25 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+
 // مجموعة Routes للمسؤول (admin)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // AdminController routes
-    Route::get('/dashboard', [AdminController::class, 'adminDashboard'])->name('dashboard');
-    Route::get('/logout', [AdminController::class, 'AdminDestroy'])->name('logout');
-    Route::get('/profile', [AdminController::class, 'adminProfile'])->name('profile');
-    Route::post('/update', [AdminController::class, 'updateProfile'])->name('update');
-    Route::get('/change/password', [AdminController::class, 'AdminChangePassword'])->name('change.password');
-    Route::post('/update-password', [AdminController::class, 'AdminUpdatePassword'])->name('update.password');
 
+    Route::controller(AdminController::class)->group(function () {
+    Route::get('/dashboard', 'adminDashboard')->name('dashboard');
+    Route::get('/logout','AdminDestroy')->name('logout');
+    Route::get('/profile', 'adminProfile')->name('profile');
+    Route::post('/update',  'updateProfile')->name('update');
+    Route::get('/change/password','AdminChangePassword')->name('change.password');
+    Route::post('/update-password','AdminUpdatePassword')->name('update.password');
+    Route::get('/inactive/provider' , 'Inactiveprovider')->name('inactive.provider');
+   Route::get('/active/provider' , 'activeprovider')->name('active.provider');
+   Route::get('/inactive/provider/details/{id}',  'InactiveDetails')->name('inactive.details');
+   Route::post('/active/provider/{id}',  'ActiveproviderApprove')->name('active.approve');
+    Route::get('/active/provider/details/{id}',  'activeDetails')->name('active.details');
+   Route::post('/inactive/provider/{id}',  'inActiveproviderApprove')->name('inactive.approve');
+        });
     // Users Routes (يديرها هنا في AdminController)
     Route::get('users', [UserController::class, 'admin_users'])->name('users.list');
     Route::get('users/view/{id}', [UserController::class, 'admin_users_view'])->name('users.view');
@@ -69,6 +79,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/bookings/{id}/delete', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
     Route::delete('/bookings/delete-multiple', [AdminBookingController::class, 'deleteMultiple'])->name('bookings.deleteMultiple');
 
+
+Route::middleware(['auth', 'role:admin'])->controller(AdminController::class)->group(function () {
+   Route::get('/admin/dashboard', 'adminDashboard')->name('admin.dashboard');
+   Route::get('/admin/logout',  'AdminDestroy')->name('admin.logout');
+   Route::get('/admin/profile','adminProfile')->name('admin.profile');
+   Route::post('/admin/update/','updateProfile')->name('admin.update');
+   Route::get('admin/change/password', 'AdminChangePassword')->name('admin.change.password');
+   Route::post('/admin/update-password' , 'AdminUpdatePassword')->name('admin.update.password');
+    Route::get('/inactive/provider' , 'Inactiveprovider')->name('inactive.provider');
+   Route::get('/active/provider' , 'activeprovider')->name('active.provider');
+   Route::get('/inactive/provider/details/{id}',  'InactiveDetails')->name('inactive.details');
+   Route::post('/active/provider/{id}',  'ActiveproviderApprove')->name('active.approve');
+    Route::get('/active/provider/details/{id}',  'activeDetails')->name('active.details');
+   Route::post('/inactive/provider/{id}',  'inActiveproviderApprove')->name('inactive.approve');
+});
+Route::get('/admin/login',  [AdminController::class , 'AdminLogin'])->name('admin.login')->middleware(RedirectIfAuthenticated::class);;
 
 });
 
@@ -98,8 +124,6 @@ Route::middleware(['auth', 'role:service_provider'])->prefix('provider')->name('
 });
 // صفحة تسجيل دخول مزود الخدمة
 Route::get('/provider/login', [Service_ProviderController::class, 'service_providerlogin'])->name('provider.login');
-
-
 // مجموعة Routes للعميل
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
         Route::controller(CustomerController::class)->group(function () {
@@ -114,7 +138,6 @@ Route::resource('bookings', CustomerBookingController::class)->only([
     ]);
     // Route إضافي للإلغاء
 });
-
 // ملف المستخدم العام (تعديل/حذف البروفايل)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

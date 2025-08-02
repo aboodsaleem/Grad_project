@@ -11,12 +11,14 @@
           </a>
         </div>
 
+
         <nav class="sidebar-nav py-20 px-0">
           <ul
             class="list-unstyled nav flex-column"
             id="v-pills-tab"
             role="tablist"
           >
+          @if(Auth::user()->status == 'active')
             <li class="nav-item">
               <a
                 class="nav-link text-decoration-none d-flex align-items-center active"
@@ -110,6 +112,45 @@
                 <span>Logout</span>
               </a>
             </li>
+            @else
+            <li class="nav-item">
+              <a
+                class="nav-link text-decoration-none d-flex align-items-center active"
+                id="tab-dashboard"
+                data-bs-toggle="pill"
+                href="#dashboard"
+                role="tab"
+              >
+                <i class="fas fa-tachometer-alt text-center"></i>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="#profile"
+                class="nav-link text-decoration-none d-flex align-items-center"
+                id="tab-profile"
+                data-bs-toggle="pill"
+                role="tab"
+              >
+                <i class="fas fa-user text-center"></i>
+                <span>Profile</span>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                class="nav-link text-decoration-none d-flex align-items-center"
+                href="{{ route('provider.logout') }}"
+              >
+                <i class="fas fa-sign-out-alt text-center"></i>
+                <span>Logout</span>
+              </a>
+            </li>
+
+            @endif
           </ul>
         </nav>
+
+
       </aside>

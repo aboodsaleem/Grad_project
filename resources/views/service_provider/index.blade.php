@@ -1,5 +1,93 @@
 @extends('service_provider.serviceprovider_Dashboard')
 @section('main')
+@if(Auth::user()->status != 'active')
+    {{-- Alert message for inactive account --}}
+<div class="container mt-5" style="max-width: 500px;">
+  <div class="card border-success shadow-sm rounded-3">
+    <div class="card-body d-flex align-items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="green" stroke-width="2" viewBox="0 0 24 24" class="me-3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+      </svg>
+      <div>
+        <h4 class="text-success fw-bold mb-2">Your Vendor Account is notActive</h4>
+        <p class="mb-0 text-secondary">Please wait while the admin reviews and approves your account.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="tab-pane fade profile-page" role="tabpanel" id="profile">
+            <div
+              class="profile-header bg-white d-flex align-items-center gap-20"
+            >
+              <img
+                src="{{ asset($service_provider->photo ?? 'upload/no_image.jpg') }}"
+                alt="Profile Image"
+                class="object-fit-cover rounded-circle profile-avatar"
+              />
+              <div class="profile-info">
+                <h2>{{ $service_provider->username }}</h2>
+                <p>Home Service Provider</p>
+                <div class="d-flex gap-20 text-gray mt-10 profile-stats">
+                  <span>Rating: <b>4.8</b></span>
+                  <span><b>156</b> Completed Bookings</span>
+                  <span>Member since <b>2025</b></span>
+                </div>
+              </div>
+              <button
+                class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#profileModal"
+              >
+                Create/Edit Profile
+              </button>
+            </div>
+
+            <div class="profile-sections d-grid gap-20">
+              <div class="profile-section bg-white mb-20">
+                <h3>Personal Information</h3>
+                <div class="info-grid d-grid gap-20 mt-20">
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Full Name</label>
+                    <span>{{ $service_provider->username }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Phone Number</label>
+                    <span>{{ $service_provider->phone }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Email</label>
+                    <span>{{ $service_provider->email }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">City</label>
+                    <span>{{ $service_provider->city }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Address</label>
+                    <span>{{ $service_provider->address }}</span>
+                  </div>
+                  <div class="info-item d-flex flex-column">
+                    <label class="text-gray fw-semibold">Date of Birth</label>
+                    <span>{{ $service_provider->date_of_birth }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="profile-section bg-white mb-20">
+                <h3>Specialized Services</h3>
+                <div class="d-flex flex-wrap gap-10 specialties">
+                  <span class="specialty-tag text-white">AC Maintenance</span>
+                  <span class="specialty-tag text-white">Home Cleaning</span>
+                  <span class="specialty-tag text-white">Plumbing Repair</span>
+                  <span class="specialty-tag text-white">Electricity</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+@else
 <div class="tab-content page-content provider" id="pills-tabContent">
           <!-- Main Dashboard Content -->
           <div
@@ -295,7 +383,7 @@
                   class="review-header d-flex justify-content-between align-items-center mb-10 gap-3"
                 >
                   <img
-                    src="public/assest/ahmed.jpeg"
+                    src="{{ asset('frontend/public/assest/ahmed.jpeg') }}"
                     alt="Client Image"
                     class="reviewer-avatar rounded-circle object-fit-cover"
                     width="50px"
@@ -327,7 +415,7 @@
                   class="review-header d-flex justify-content-between align-items-center mb-10 gap-3"
                 >
                   <img
-                    src="public/assest/sarah.jpg"
+                    src="{{ asset('frontend/public/assest/sarah.jpg') }}"
                     alt="Client Image"
                     class="reviewer-avatar rounded-circle object-fit-cover"
                     width="50px"
@@ -431,6 +519,7 @@
             </div>
           </div>
         </div>
+@endif
 @endsection
 
 @section('js')

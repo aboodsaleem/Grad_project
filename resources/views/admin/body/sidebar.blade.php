@@ -19,6 +19,22 @@
             </a>
         </li>
 
+        <li class="menu-label">service_provider setup</li>
+				<li>
+					<a class="has-arrow" href="javascript:;">
+
+				    <div class="menu-title">service_provider status</div>
+					</a>
+					<ul>
+						<li> <a href="{{ route('admin.active.provider') }}"><i class="bx bx-right-arrow-alt"></i>service_provider active</a>
+						</li>
+						<li> <a href="{{ route('admin.inactive.provider') }}"><i class="bx bx-right-arrow-alt"></i>service_provider inactive</a>
+						</li>
+
+					</ul>
+				</li>
+
+
         <li class="menu-label">Web Apps</li>
 
         <li>
@@ -73,3 +89,4 @@
     </ul>
     <!--end navigation-->
 </div>
+

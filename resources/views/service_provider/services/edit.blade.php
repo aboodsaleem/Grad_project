@@ -1,107 +1,67 @@
-@extends('service_provider.serviceprovider_Dashboard')
-@section('title', 'Edit Service')
+<!-- Edit Service Modal -->
+<div class="modal fade" id="editServiceModal{{ $service->id }}" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content p-2">
+      <div class="modal-header">
+        <h2 class="fw-semibold fs-5">Edit Service</h2>
+        <button type="button" class="btn-close position-absolute end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('provider.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          @method('PUT')
 
-@section('service_provider')
-<div class="page-content">
-    <!--breadcrumb-->
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Services</div>
-        <div class="ps-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Edit Service</li>
-                </ol>
-            </nav>
+          <!-- Service Name -->
+          <div class="mb-1">
+            <label for="serviceName{{ $service->id }}" class="form-label">Service Name</label>
+            <input type="text" class="form-control" id="serviceName{{ $service->id }}" name="name" value="{{ $service->name }}" required>
+          </div>
+
+          <!-- Service Type -->
+          <div class="mb-1">
+            <label for="serviceType{{ $service->id }}" class="form-label">Service Type</label>
+            <select id="serviceType{{ $service->id }}" name="serviceType" class="form-select" required>
+              @foreach(['Electrical', 'Maintenance', 'Repairing', 'Cleaning', 'Washing'] as $type)
+                <option value="{{ $type }}" {{ $service->serviceType === $type ? 'selected' : '' }}>{{ $type }}</option>
+              @endforeach
+            </select>
+          </div>
+
+          <!-- Price -->
+          <div class="mb-1">
+            <label for="price{{ $service->id }}" class="form-label">Price</label>
+            <input type="number" class="form-control" id="price{{ $service->id }}" name="price" step="0.01" min="0" value="{{ $service->price }}" required>
+          </div>
+<div class="mb-1">
+    <label for="image{{ $service->id }}" class="form-label">Image</label>
+
+    @if ($service->image)
+        <div class="mb-2">
+            <img src="{{ asset($service->image) }}" alt="Service Image" width="150" class="rounded">
         </div>
-    </div>
-    <!--end breadcrumb-->
+    @endif
 
-    <div class="row">
-        <div class="col-xl-9 mx-auto">
-            <hr/>
-            <div class="card">
-                <div class="card-body">
-                    <form action="{{ route('provider.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="mb-3">
-                            <label>Category</label>
-                            <select name="category_id" class="form-control @error('category_id') is-invalid @enderror">
-                                <option value="">Select Category</option>
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat->id }}" {{ (old('category_id', $service->category_id) == $cat->id) ? 'selected' : '' }}>
-                                        {{ $cat->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('category_id')
-                                <small class="invalid-feedback">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Title</label>
-                            <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
-                                   value="{{ old('title', $service->title) }}" placeholder="Service Title" />
-                            @error('title')
-                                <small class="invalid-feedback">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
-                                      placeholder="Service Description">{{ old('description', $service->description) }}</textarea>
-                            @error('description')
-                                <small class="invalid-feedback">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Price</label>
-                            <input type="number" step="0.001" name="price" class="form-control @error('price') is-invalid @enderror"
-                                   value="{{ old('price', $service->price) }}" placeholder="Price" />
-                            @error('price')
-                                <small class="invalid-feedback">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Current Photo</label>
-                            <br>
-                            @if($service->photo)
-                                <img src="{{ asset($service->photo) }}" style="width:100px; height:auto;" alt="Service Photo">
-                            @else
-                                <p>No photo uploaded</p>
-                            @endif
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Change Photo</label>
-                            <input type="file" name="photo" class="form-control @error('photo') is-invalid @enderror" />
-                            @error('photo')
-                                <small class="invalid-feedback">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label>Status</label>
-                            <select name="status" class="form-control @error('status') is-invalid @enderror">
-                                <option value="active" {{ (old('status', $service->status) == 'active') ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ (old('status', $service->status) == 'inactive') ? 'selected' : '' }}>Inactive</option>
-                            </select>
-                            @error('status')
-                                <small class="invalid-feedback">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <button class="btn btn-primary"><i class="fas fa-edit mr-1 ml-1"></i> Update Service</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <input type="file" name="image" id="image{{ $service->id }}" class="form-control" accept="image/*">
 </div>
-@endsection
+
+
+          <!-- Description -->
+          <div class="mb-1">
+            <label for="description{{ $service->id }}" class="form-label">Description</label>
+            <textarea class="form-control" id="description{{ $service->id }}" name="description" rows="3" required>{{ $service->description }}</textarea>
+          </div>
+
+          <!-- Status Checkbox -->
+          <div class="mb-2 form-check">
+            <input type="checkbox" class="form-check-input" id="status{{ $service->id }}" name="status" value="1" {{ $service->status ? 'checked' : '' }}>
+            <label class="form-check-label" for="status{{ $service->id }}">Check if this service is active</label>
+          </div>
+
+          <!-- Buttons -->
+          <button type="submit" class="btn btn-primary">Update Service</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -35,12 +35,15 @@ class AuthenticatedSessionController extends Controller
                 } elseif ($request->user()->role === 'service_provider') {
                     $url = route('provider.dashboard');
                 } elseif ($request->user()->role === 'customer') {
-                    $url = route('dashboard');
+                    $url = route('customer.dashboard');
                 }
+        $notification = [
+        'message' =>  'log in success',
+        'alert-type' => 'success'
+       ];
 
-            return redirect()->intended($url);
+            return redirect()->intended($url)->with($notification);
 
-        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
@@ -54,6 +57,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }

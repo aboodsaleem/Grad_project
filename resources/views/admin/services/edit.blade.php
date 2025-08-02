@@ -24,13 +24,14 @@
                         @csrf
                         @method('PUT')
 
+                        <!-- Service Provider -->
                         <div class="mb-3">
                             <label>Service Provider</label>
                             <select name="service_provider_id" class="form-control @error('service_provider_id') is-invalid @enderror" required>
-                                <option value="">اختر مزود الخدمة</option>
+                                <option value="">Select Service Provider</option>
                                 @foreach($providers as $provider)
-                                    <option value="{{ $provider->id }}" {{ old('service_provider_id', $service->service_provider_id) == $provider->id ? 'selected' : '' }}>
-                                        {{ $provider->username ?? 'اسم غير متوفر' }}
+                                    <option value="{{ $provider->id }}" {{ $service->service_provider_id == $provider->id ? 'selected' : '' }}>
+                                        {{ $provider->username ?? 'Unavailable Name' }}
                                     </option>
                                 @endforeach
                             </select>
@@ -39,51 +40,69 @@
                             @enderror
                         </div>
 
+                        <!-- Service Name -->
                         <div class="mb-3">
-                            <label>Title</label>
-                            <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
-                                   value="{{ old('title', $service->title) }}" placeholder="Service Title" required />
-                            @error('title')
+                            <label>Service Name</label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                   value="{{ old('name', $service->name) }}" placeholder="Enter the service name" required />
+                            @error('name')
                                 <small class="invalid-feedback">{{ $message }}</small>
                             @enderror
                         </div>
 
+                        <!-- Service Type -->
                         <div class="mb-3">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
-                                      placeholder="Service Description" required>{{ old('description', $service->description) }}</textarea>
-                            @error('description')
+                            <label>Service Type</label>
+                            <select name="serviceType" class="form-control @error('serviceType') is-invalid @enderror" required>
+                                <option value="">Select Service Type</option>
+                                @foreach(['Electrical','Maintenance','Repairing','Cleaning','Washing'] as $type)
+                                    <option value="{{ $type }}" {{ $service->serviceType == $type ? 'selected' : '' }}>{{ $type }}</option>
+                                @endforeach
+                            </select>
+                            @error('serviceType')
                                 <small class="invalid-feedback">{{ $message }}</small>
                             @enderror
                         </div>
 
+
+                        <!-- Price -->
                         <div class="mb-3">
-                            <label>Price</label>
+                            <label>Price ($)</label>
                             <input type="number" step="0.01" name="price" class="form-control @error('price') is-invalid @enderror"
-                                   value="{{ old('price', $service->price) }}" placeholder="Price" required />
+                                   value="{{ old('price', $service->price) }}" placeholder="Enter price" required />
                             @error('price')
                                 <small class="invalid-feedback">{{ $message }}</small>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label>Current Photo</label><br>
-                            @if($service->image)
-                                <img src="{{ asset($service->image) }}" style="width:100px; height:auto;" alt="Service Photo">
-                            @else
-                                <p>لا توجد صورة</p>
-                            @endif
-                        </div>
+                        <!-- Image -->
+<div class="mb-3">
+    <label>Service Image</label>
+    <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" />
+    @error('image')
+        <small class="invalid-feedback">{{ $message }}</small>
+    @enderror
 
+    @if ($service->image)
+        <div class="mt-2">
+            <img src="{{ asset($service->image) }}" alt="Service Image" width="100">
+        </div>
+    @endif
+</div>
+
+<!-- Description -->
                         <div class="mb-3">
-                            <label>Change Photo</label>
-                            <input type="file" name="image" class="form-control @error('image') is-invalid @enderror" />
-                            @error('image')
+                            <label>Description</label>
+                            <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="4"
+                                      placeholder="Enter service description" required>{{ old('description', $service->description) }}</textarea>
+                            @error('description')
                                 <small class="invalid-feedback">{{ $message }}</small>
                             @enderror
                         </div>
 
-                        <button class="btn btn-primary"><i class="fas fa-edit mr-1 ml-1"></i> Update Service</button>
+
+
+                        <button class="btn btn-primary"><i class="fas fa-save mr-1 ml-1"></i> Update Service</button>
                     </form>
                 </div>
             </div>

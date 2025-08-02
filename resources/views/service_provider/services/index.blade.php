@@ -1,89 +1,107 @@
-@extends('service_provider.serviceprovider_Dashboard')
-@section('title', 'All Services')
 
-@section('service_provider')
-<div class="page-content">
-    <!--breadcrumb-->
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">Services</div>
-        <div class="ps-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">All Services</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="ms-auto">
-            <a href="{{ route('provider.services.create') }}" class="btn btn-success"><i class="fas fa-plus"></i> Add New Service</a>
-            {{-- تم حذف زر Trashed لأنه لم يعد موجود --}}
-        </div>
-    </div>
-    <!--end breadcrumb-->
+          <!-- Main Services Content -->
+          <div
+            class="tab-pane fade services-page"
+            id="services"
+            role="tabpanel"
+          >
+            <div
+              class="d-flex justify-content-between align-items-center page-header"
+            >
+              <h2 class="fw-semibold">My Available Services</h2>
+              <button
+                class="btn btn-primary add-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#addServiceModal"
+              >
+                Add New Service
+              </button>
+            </div>
+            <div class="services-grid d-grid gap-20">
+                @foreach ( $services as $service)
 
-    <div class="card">
-        <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
-            <table class="table table-bordered table-striped align-middle">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Provider</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($services as $service)
-                        <tr>
-                            <td>{{ $service->id }}</td>
-                            <td>
-                                <img src="{{ asset($service->photo ?? 'upload/no_img.jpg') }}"
-                                     alt="Service Image"
-                                     style="width: 70px; height: 50px; object-fit: cover; border-radius: 5px;">
-                            </td>
-                            <td>{{ $service->title }}</td>
-                            <td>{{ $service->category->name ?? '-' }}</td>
-                            <td>{{ $service->price }}</td>
-                            <td>{{ ucfirst($service->status) }}</td>
-                            <td>{{ $service->provider->username ?? '-' }}</td>
-                            <td>
-                                <a href="{{ route('provider.services.edit', $service->id) }}" class="btn btn-sm btn-info" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-
-                                <form action="{{ route('provider.services.destroy', $service->id) }}" method="POST" style="display:inline;">
+                 <div
+                class="service-card p-20 d-flex flex-column justify-content-center align-items-center"
+              >
+                <div
+                  class="service-icon text-white d-flex justify-content-center align-items-center rounded-circle mb-3"
+                >
+                @switch($service->serviceType)
+                    @case('Electrical')
+                        <i class="fas fa-bolt"></i>
+                        @break
+                    @case('Maintenance')
+                        <i class="fas fa-tools"></i>
+                        @break
+                    @case('Repairing')
+                        <i class="fas fa-wrench"></i>
+                        @break
+                    @case('Cleaning')
+                        <i class="fas fa-broom"></i>
+                        @break
+                    @case('Washing')
+                        <i class="fas fa-tint"></i>
+                        @break
+                    @default
+                        <i class="fas fa-cog"></i>
+                @endswitch
+                </div>
+                <h3 class="fw-bold fs-4">{{ $service->serviceType }}</h3>
+                <p>
+                  {{ $service->description }}
+                </p>
+                <div class="service-price fw-medium text-success mb-2">
+                  Base Price: {{ $service->price }}
+                </div>
+                <div class="service-actions">
+                  <button
+                    class="btn btn-primary edit-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editServiceModal{{ $service->id }}"
+                  >
+                    Edit
+                  </button>
+                   <form action="{{ route('provider.services.destroy' , $service->id) }}" method="POST" style="display:inline-block;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-warning delete-btn"
-                                        data-url="{{ route('provider.services.destroy', $service->id) }}"
-                                        data-title="هل أنت متأكد من حذف الخدمة؟"
-                                        data-confirm="نعم، احذف"
-                                        data-cancel="إلغاء"
-                                        data-method="DELETE"
-                                        title="Delete">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="8" class="text-center">No services found.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+                  <button type="button" class="btn btn-secondary delete-btn"  data-url="{{ route('provider.services.destroy', $service->id) }}"
+    data-title="هل أنت متأكد من حذف هذه الخدمة؟"
+    data-confirm="نعم، احذف"
+    data-cancel="إلغاء"
+    data-method="DELETE"
+    title="حذف">Delete</button>
+                   </form>
+                </div>
+              </div>
 
-            {{ $services->links() }}
-        </div>
-    </div>
-</div>
+                @endforeach
+{{--
+              <div
+                class="service-card p-20 d-flex flex-column justify-content-center align-items-center"
+              >
+                <div
+                  class="service-icon text-white d-flex justify-content-center align-items-center rounded-circle mb-3"
+                >
+                  <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="fw-bold fs-4">Furniture Assembly</h3>
+                <p>
+                  Assembly services for all types of home and office furniture.
+                </p>
+                <div class="service-price fw-medium text-success mb-2">
+                  Base Price: $120
+                </div>
 
-@include('admin.partials.sweetalert_actions')
-@endsection
+                <div class="service-actions">
+                  <button
+                    class="btn btn-primary edit-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editServiceModal"
+                  >
+                    Edit
+                  </button>
+                  <button class="btn btn-secondary delete-btn">Delete</button>
+                </div>
+              </div> --}}
+            </div>
+          </div>

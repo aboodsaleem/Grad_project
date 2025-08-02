@@ -13,23 +13,66 @@
                 </ol>
             </nav>
         </div>
-        <div class="ms-auto">
-            <a href="{{ route('admin.services.create') }}" class="btn btn-success"> <i class="fas fa-plus"></i> Add New Service</a>
-        </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
+    <form method="GET" action="{{ route('admin.services.index') }}">
+    <div class="row">
+        <!-- Service Type -->
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label class="form-label">Service Type</label>
+                <select name="serviceType" class="form-control">
+                    <option value="">Select Type</option>
+                    @foreach(['Electrical','Maintenance','Repairing','Cleaning','Washing'] as $type)
+                        <option value="{{ $type }}" {{ request('serviceType') == $type ? 'selected' : '' }}>
+                            {{ $type }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
 
-            <table class="table table-bordered table-striped align-middle text-center">
-                <thead>
+        <!-- Provider Name -->
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label class="form-label">Provider Name</label>
+                <input type="text" class="form-control" name="provider_name" value="{{ request('provider_name') }}">
+            </div>
+        </div>
+
+        <!-- Price -->
+        <div class="col-sm-3">
+            <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input type="number" step="0.01" class="form-control" name="price" value="{{ request('price') }}">
+            </div>
+        </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="{{ route('admin.services.index') }}" class="btn btn-danger">Reset</a>
+</form>
+<br>
+
+    <div class="card radius-10">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+				<div>
+					<h5 class="mb-0">All Services</h5>
+				</div>
+				<div class="font-22 ms-auto">
+                    <a href="{{ route('admin.services.create') }}" class="btn btn-success"> <i class="fas fa-plus"></i> Add New Service</a>
+				</div>
+				</div>
+				<hr>
+            <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>Image</th>
-                        <th>Title</th>
+                        <th>Name</th>
+                        <th>Service Type</th>
                         <th>Price</th>
                         <th>Service Provider</th>
                         <th>Actions</th>
@@ -38,13 +81,9 @@
                 <tbody>
                     @forelse($services as $service)
                         <tr>
-                            <td>{{ $service->id }}</td>
-                            <td>
-                                <img src="{{ asset($service->image ?? 'upload/no_img.jpg') }}"
-                                    alt="Service Image"
-                                    style="width: 80px; height: 70px; object-fit: cover; border-radius: 5px;">
-                            </td>
-                            <td>{{ $service->title }}</td>
+                            <td class="fw-bold">{{ $service->id }}</td>
+                            <td>{{ $service->name }}</td>
+                            <td>{{ $service->serviceType }}</td>
                             <td>{{ number_format($service->price, 2) }} $</td>
                             <td>{{ $service->serviceProvider->username ?? '-' }}</td>
                             <td>
@@ -75,6 +114,7 @@
             </table>
 
             {{ $services->links() }}
+        </div>
         </div>
     </div>
 </div>

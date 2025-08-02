@@ -1,0 +1,12 @@
+            @error('password')
+            <span class="text-danger">{{ $message }}</span>
+            @enderror
+
+            @error('password') is-invalid @enderror
+
+        <form  method="POST" action="{{ route('login') }}">
+            @csrf
+
+
+   <form method="POST" action="{{ route('password.email') }}">
+        @csrf

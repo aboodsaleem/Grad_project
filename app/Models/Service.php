@@ -12,10 +12,11 @@ class Service extends Model
 
     protected $table = 'services';
     protected $fillable = [
-        'title',
+        'name',
+        'serviceType',
         'description',
-        'price',
         'image',
+        'price',
         'service_provider_id',
 
     ];

@@ -66,13 +66,6 @@
 
                             <div class="col-sm-2">
                                 <div class="mb-3">
-                                    <label for="" class="form-label">Website</label>
-                                    <input type="text" class="form-control" name="address" placeholder="Enter Website">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-2">
-                                <div class="mb-3">
                                     <label for="" class="form-label">Role</label>
                                     <select class="form-control" name="role" >
                                         <option value="">Select Role</option>
@@ -96,7 +89,7 @@
 
                         </div>
                         <button type="submit" class="btn btn-primary">Search</button>
-                        <a href="" class="btn btn-danger">Reset</a>
+                        <a href="{{ route('admin.users.list') }}" class="btn btn-danger">Reset</a>
                     </form>
                 </div>
             </div>
@@ -161,7 +154,6 @@
                                     <th>Email</th>
                                     <th>Photo</th>
                                     <th>Phone</th>
-                                    <th>Address</th>
                                     <th>Role</th>
                                     <th>Status</th>
                                     <th>Created</th>
@@ -178,7 +170,6 @@
                                             <img src="{{ asset($user->photo ?? 'upload/no_img.jpg') }}" class="img-thumbnail rounded-circle shadow" style="width:50px; height:50px;" alt="">
                                         </td>
                                         <td>{{ $user->phone }}</td>
-                                        <td>{{ $user->address }}</td>
                                         <td>
                                             @if ($user->role == 'admin')
                                                 <span class="badge bg-info">Admin</span>
@@ -197,42 +188,25 @@
                                         </td>
                                         <td>{{ $user->created_at ? $user->created_at->format('d-m-Y') : '-' }}</td>
                                         <td>
-                                            <a class="btn btn-sm btn-info" href="{{ route('admin.users.view', $user->id) }}">
-                                                <i class="fa fa-eye"></i>
-                                            </a>
+    <a class="btn btn-sm btn-info" href="{{ route('admin.users.view', $user->id) }}">
+        <i class="fa fa-eye"></i>
+    </a>
 
-                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-primary " title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-primary" title="Edit">
+        <i class="fas fa-edit"></i>
+    </a>
 
-                                            @if (is_null($user->deleted_at))
-                                                <button type="button" class="btn btn-sm btn-warning delete-btn"
-                                                    data-url="{{ route('admin.users.softDelete', $user->id) }}"
-                                                    data-title="هل أنت متأكد من الحذف المؤقت؟"
-                                                    data-confirm="نعم، احذفه"
-                                                    data-cancel="إلغاء"
-                                                    data-method="DELETE">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            @else
-                                                <button type="button" class="btn btn-sm btn-success restore-btn"
-                                                    data-url="{{ route('admin.users.restore', $user->id) }}"
-                                                    data-title="هل تريد استرجاع هذا المستخدم؟"
-                                                    data-confirm="نعم، استرجاع"
-                                                    data-cancel="إلغاء">
-                                                    <i class="fas fa-undo"></i>
-                                                </button>
+    <!-- زر الحذف المؤقت فقط -->
+    <button type="button" class="btn btn-sm btn-warning delete-btn"
+        data-url="{{ route('admin.users.softDelete', $user->id) }}"
+        data-title="هل أنت متأكد من الحذف المؤقت؟"
+        data-confirm="نعم، احذفه"
+        data-cancel="إلغاء"
+        data-method="DELETE">
+        <i class="fas fa-trash-alt"></i>
+    </button>
+</td>
 
-                                                <button type="button" class="btn btn-sm btn-danger delete-btn"
-                                                    data-url="{{ route('admin.users.forceDelete', $user->id) }}"
-                                                    data-title="هل تريد الحذف النهائي؟"
-                                                    data-confirm="نعم، احذفه نهائيًا"
-                                                    data-cancel="إلغاء"
-                                                    data-method="DELETE">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
-                                            @endif
-                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

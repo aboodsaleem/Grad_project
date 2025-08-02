@@ -8,28 +8,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Booking extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'booking_date',
-        'booking_time',
+        'start_time',
+        'end_time',
         'status',
+        'description',
         'service_id',
-        'service_provider_id',
         'user_id',
+        'service_provider_id',
     ];
 
-    public function user()
+    // علاقة الحجز بالعميل (User)
+    public function customer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
+    // علاقة الحجز بمزود الخدمة
     public function serviceProvider()
-{
-    return $this->belongsTo(User::class, 'service_provider_id');
-}
+    {
+        return $this->belongsTo(User::class, 'service_provider_id');
+    }
 
-
+    // علاقة الحجز بالخدمة المحجوزة
     public function service()
     {
         return $this->belongsTo(Service::class);

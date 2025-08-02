@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Mail\RegisteredMail;
+use App\Models\Booking;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,7 +17,16 @@ class AdminController extends Controller
 {
     public function adminDashboard(Request $request){
 
-        return view('admin.index');
+    $countUsers = User::count(); // كل المستخدمين (ادمن، مزود، عملاء)
+    $countBookings = Booking::count(); // كل الحجوزات (مؤكدة، ملغية، إلخ)
+    $countServices = Service::count(); // كل الخدمات
+
+     $bookings = Booking::with(['service', 'customer'])
+        ->where('status', 'pending')
+        ->orderBy('id', 'desc')
+        ->get();
+
+        return view('admin.index', compact('countUsers', 'countBookings', 'countServices', 'bookings'));
     }
 
     public function AdminLogin(){

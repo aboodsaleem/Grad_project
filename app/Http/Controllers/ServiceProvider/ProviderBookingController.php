@@ -9,42 +9,84 @@ use Illuminate\Support\Facades\Auth;
 
 class ProviderBookingController extends Controller
 {
-    // عرض الحجوزات الخاصة بمزود الخدمة
-    public function index()
+   public function index()
+{
+    $serviceProviderId = Auth::id();
+
+    // اجلب جميع الحجوزات المرتبطة بالخدمات التي أضافها مزود الخدمة الحالي
+    $bookings = Booking::with(['customer', 'service'])
+        ->where('service_provider_id', $serviceProviderId)
+        ->latest()
+        ->get();
+
+    return view('service_provider.bookings.index', compact('bookings'));
+}
+
+   public function accept($id)
     {
-        $providerId = Auth::id();
-        $bookings = Booking::with(['service', 'customer'])
-            ->where('service_provider_id', $providerId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $booking = Booking::findOrFail($id);
 
-        return view('provider.bookings.index', compact('bookings'));
-    }
+        if ($booking->service_provider_id !== auth()->id()) {
+            abort(403);
+        }
 
-    // عرض تفاصيل حجز معين
-    public function show($id)
-    {
-        $providerId = Auth::id();
-        $booking = Booking::with(['service', 'customer'])
-            ->where('service_provider_id', $providerId)
-            ->findOrFail($id);
-
-        return view('provider.bookings.show', compact('booking'));
-    }
-
-    // تحديث حالة الحجز (قبول، رفض، تحديث الحالة)
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|in:accepted,rejected,canceled,completed',
-        ]);
-
-        $providerId = Auth::id();
-        $booking = Booking::where('service_provider_id', $providerId)->findOrFail($id);
-
-        $booking->status = $request->status;
+        $booking->status = 'confirmed';
         $booking->save();
 
-        return redirect()->back()->with('success', 'تم تحديث حالة الحجز');
+         $notification = [
+        'message' => 'Booking accepted successfully.',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()
+        ->route('provider.dashboard')
+        ->with($notification);
+
     }
+
+    public function reject($id)
+    {
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->service_provider_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $booking->status = 'cancelled';
+        $booking->save();
+
+        $notification = [
+        'message' => 'Booking cancelled successfully.',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()
+        ->route('provider.dashboard')
+        ->with($notification);
+
+    }
+
+    public function complete($id)
+{
+    $booking = Booking::findOrFail($id);
+
+    // تحقق إن مزود الخدمة الحالي هو صاحب هذه الخدمة
+    if ($booking->service_provider_id != auth()->id()) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    $booking->status = 'completed';
+    $booking->save();
+
+    $notification = [
+        'message' => 'Booking completed successfully.',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()
+        ->route('provider.dashboard')
+        ->with($notification);
+
+}
+
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\ServiceProvider;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,23 +12,36 @@ use Illuminate\Support\Facades\Hash;
 
 class Service_ProviderController extends Controller
 {
-    public function service_providerDashboard(Request $request){
-
-        return view('service_provider.index');
-    }
     public function service_providerlogin(){
 
         return view('service_provider.login');
     }
-
-    public function service_providerProfile(){
+    public function service_providerDashboard(){
         $id = Auth::user()->id;
-        $service_provider = User::find($id);
+    $service_provider = User::find($id);
+        $serviceProviderId = Auth::id();
 
-        return view('service_provider.profile_view',compact('service_provider'));
+    // 🔧 جلب الخدمات التابعة للمزود
+    $services = Service::where('service_provider_id', $id)->get();
+     $bookings = Booking::with(['customer', 'service'])
+        ->where('service_provider_id', $serviceProviderId)
+        ->latest()
+        ->get();
+
+    $pendingBooking = Booking::with(['customer', 'service'])
+        ->where('service_provider_id', $serviceProviderId)
+        ->where('status', 'pending')  // فقط الحجوزات المعلقة
+        ->latest()
+        ->get();
+
+    // 📤 إرسال كلا المتغيرين للعرض
+    return view('service_provider.index', compact('service_provider', 'services','bookings','pendingBooking'));
     }
 
-    public function updateProfile(Request $request){
+
+
+
+public function updateProfile(Request $request){
 
 
     $id = Auth::user()->id;
@@ -62,7 +77,10 @@ class Service_ProviderController extends Controller
         'email' => $request->email,
         'phone' =>$request->phone,
         'address' =>$request->address,
+        'date_of_birth' =>$request->date_of_birth,
+        'city' =>$request->city,
         'photo' => $save_url,
+
     ]);
 
     // ✅ إشعار النجاح
@@ -74,44 +92,95 @@ class Service_ProviderController extends Controller
     return redirect()->back()->with($notification);
 }
 
-public function ChangePassword() {
-    return view('service_provider.change_password');
-}
+
 
 public function UpdatePassword(Request $request)
 {
     $id = Auth::user()->id;
     $service_provider = User::findOrFail($id);
+
+    // التحقق فقط من كلمة المرور الجديدة
     $request->validate([
-        'old_password' => 'required',
-        'new_password' => 'required|confirmed|min:8|different:old_password',
+        'new_password' => 'required|min:8',
     ], [
-        'old_password.required' => 'يرجى إدخال كلمة المرور القديمة.',
         'new_password.required' => 'يرجى إدخال كلمة المرور الجديدة.',
-        'new_password.confirmed' => 'تأكيد كلمة المرور غير مطابق.',
         'new_password.min' => 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.',
-        'new_password.different' => 'كلمة المرور الجديدة يجب أن تختلف عن القديمة.',
     ]);
 
-    if (!Hash::check($request->old_password, Auth::user()->password)) {
-        return back()->with('error', 'كلمة المرور القديمة غير صحيحة.');
-    }
-
+    // تحديث كلمة المرور
     $service_provider->update([
         'password' => Hash::make($request->new_password),
     ]);
+        $notification = [
+        'message' => 'تم تحديث  بنجاح',
+        'alert-type' => 'success'
+    ];
 
-    return back()->with('status', 'تم تغيير كلمة المرور بنجاح.');
+    return back()->with($notification);
+}
+public function Updateemail(Request $request)
+{
+    $id = Auth::user()->id;
+    $service_provider = User::findOrFail($id);
+
+    // التحقق فقط من كلمة المرور الجديدة
+$request->validate([
+    'email' => 'required|email|unique:users,email',
+], [
+    'email.required' => 'يرجى إدخال البريد الإلكتروني.',
+    'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
+    'email.unique' => 'هذا البريد الإلكتروني مستخدم بالفعل.',
+]);
+
+
+    // تحديث كلمة المرور
+    $service_provider->update([
+        'email' => $request->email,
+    ]);
+        $notification = [
+        'message' => 'تم تحديث  بنجاح',
+        'alert-type' => 'success'
+    ];
+
+    return back()->with($notification);
 }
 
+public function Updatephone(Request $request)
+{
+    $id = Auth::user()->id;
+    $service_provider = User::findOrFail($id);
 
-    public function Service_ProviderDestroy(Request $request){
+    // التحقق فقط من كلمة المرور الجديدة
+$request->validate([
+    'phone' => 'required|numeric|digits_between:8,15|unique:users,phone',
+], [
+    'phone.required' => 'يرجى إدخال رقم الهاتف.',
+    'phone.numeric' => 'يجب أن يحتوي رقم الهاتف على أرقام فقط.',
+    'phone.digits_between' => 'رقم الهاتف يجب أن يكون بين 8 و15 رقمًا.',
+    'phone.unique' => 'رقم الهاتف مستخدم بالفعل.',
+]);
+
+
+    // تحديث كلمة المرور
+    $service_provider->update([
+        'phone' => $request->phone,
+    ]);
+        $notification = [
+        'message' => 'تم تحديث  بنجاح',
+        'alert-type' => 'success'
+    ];
+
+    return back()->with($notification);
+}
+
+public function Service_ProviderDestroy(Request $request){
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect()->route('provider.login');
+
+        return redirect()->route('login');
 }
 }

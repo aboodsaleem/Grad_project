@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('day_of_week', ['sunday','monday','tuesday','wednesday','thursday','friday','saturday']);
             $table->time('start_time');
             $table->time('end_time');
-            $table->foreignId('service_provider_id')->constrained('service_providers')->cascadeOnDelete();
+            $table->foreignId('service_provider_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

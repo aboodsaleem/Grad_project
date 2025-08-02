@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-$table->foreignId('service_provider_id')->constrained('users')->onDelete('cascade');
-            $table->string('title');
+            $table->foreignId('service_provider_id')->constrained('users')->onDelete('cascade');
+            $table->string('name');
+            $table->enum('serviceType', ['Electrical','Maintenance','Repairing','Cleaning','Washing']);
             $table->text('description');
             $table->decimal('price', 8, 2);
-            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

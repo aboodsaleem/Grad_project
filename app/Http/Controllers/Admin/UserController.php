@@ -13,56 +13,58 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
     // عرض قائمة المستخدمين مع بحث وفلاتر
-    public function admin_users(Request $request)
-    {
-        $query = User::withTrashed()->orderBy('id', 'desc');
+    // عرض قائمة المستخدمين (بدون المحذوفين)
+public function admin_users(Request $request)
+{
+    $query = User::query()->orderBy('id', 'desc'); // بدون withTrashed()
 
-        $query->when($request->id, function($q) use ($request) {
-            $q->where('id', $request->id);
-        });
+    $query->when($request->id, function($q) use ($request) {
+        $q->where('id', $request->id);
+    });
 
-        $query->when($request->username, function($q) use ($request) {
-            $q->where('username', 'like', '%' . $request->username . '%');
-        });
+    $query->when($request->username, function($q) use ($request) {
+        $q->where('username', 'like', '%' . $request->username . '%');
+    });
 
-        $query->when($request->email, function($q) use ($request) {
-            $q->where('email', 'like', '%' . $request->email . '%');
-        });
+    $query->when($request->email, function($q) use ($request) {
+        $q->where('email', 'like', '%' . $request->email . '%');
+    });
 
-        $query->when($request->phone, function($q) use ($request) {
-            $q->where('phone', 'like', '%' . $request->phone . '%');
-        });
+    $query->when($request->phone, function($q) use ($request) {
+        $q->where('phone', 'like', '%' . $request->phone . '%');
+    });
 
-        $query->when($request->role, function($q) use ($request) {
-            $q->where('role', $request->role);
-        });
+    $query->when($request->role, function($q) use ($request) {
+        $q->where('role', $request->role);
+    });
 
-        $query->when($request->status, function($q) use ($request) {
-            $q->where('status', $request->status);
-        });
+    $query->when($request->status, function($q) use ($request) {
+        $q->where('status', $request->status);
+    });
 
-        $users = $query->paginate(10)->withQueryString();
+    $users = $query->paginate(10)->withQueryString();
 
-        // إحصائيات المستخدمين
-        $countAdmins = User::where('role', 'admin')->count();
-        $countProviders = User::where('role', 'service_provider')->count();
-        $countCustomers = User::where('role', 'customer')->count();
+    // إحصائيات المستخدمين
+    $countAdmins = User::where('role', 'admin')->count();
+    $countProviders = User::where('role', 'service_provider')->count();
+    $countCustomers = User::where('role', 'customer')->count();
 
-        $countActive = User::where('status', 'active')->count();
-        $countInactive = User::where('status', 'inactive')->count();
+    $countActive = User::where('status', 'active')->count();
+    $countInactive = User::where('status', 'inactive')->count();
 
-        $countTotal = User::count();
+    $countTotal = User::count();
 
-        return view('admin.users.list', compact(
-            'users',
-            'countAdmins',
-            'countProviders',
-            'countCustomers',
-            'countActive',
-            'countInactive',
-            'countTotal'
-        ));
-    }
+    return view('admin.users.list', compact(
+        'users',
+        'countAdmins',
+        'countProviders',
+        'countCustomers',
+        'countActive',
+        'countInactive',
+        'countTotal'
+    ));
+}
+
 
     // عرض بيانات مستخدم مفرد
     public function admin_users_view($id)
@@ -101,10 +103,14 @@ class UserController extends Controller
 
         Mail::to($user->email)->send(new RegisteredMail($user));
 
+        $notification = [
+        'message' => 'User added successfully',
+        'alert-type' => 'success'
+    ];
+
         return redirect()
             ->route('admin.users.list')
-            ->with('msg', 'User added successfully')
-            ->with('type', 'success');
+            ->with($notification);
     }
 
     // صفحة تعديل مستخدم
@@ -142,11 +148,16 @@ class UserController extends Controller
 
         $user->save();
 
+        $notification = [
+        'message' => 'User updated successfully',
+        'alert-type' => 'success'
+    ];
+
         return redirect()
             ->route('admin.users.list')
-            ->with('msg', 'User updated successfully')
-            ->with('type', 'success');
+            ->with($notification);
     }
+
 
     // حذف مؤقت (Soft Delete)
     public function softDelete($id)
@@ -154,7 +165,16 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('admin.users.list')->with('success', 'User temporarily deleted');
+        $notification = [
+        'message' => 'User Soft deleted successfully',
+        'alert-type' => 'success'
+    ];
+
+        return redirect()
+            ->route('admin.users.list')
+            ->with($notification);
+
+
     }
 
     // استرجاع مستخدم محذوف مؤقتًا
@@ -163,7 +183,15 @@ class UserController extends Controller
         $user = User::withTrashed()->findOrFail($id);
         $user->restore();
 
-        return redirect()->route('admin.users.list')->with('success', 'User restored successfully.');
+        $notification = [
+        'message' => 'User restored successfully',
+        'alert-type' => 'success'
+    ];
+
+        return redirect()
+            ->route('admin.users.list')
+            ->with($notification);
+
     }
 
     // حذف نهائي (Force Delete)
@@ -176,8 +204,15 @@ class UserController extends Controller
         }
 
         $user->forceDelete();
+$notification = [
+        'message' => 'User Force deleted successfully',
+        'alert-type' => 'success'
+    ];
 
-        return redirect()->route('admin.users.list')->with('success', 'This user has been permanently deleted.');
+        return redirect()
+            ->route('admin.users.list')
+            ->with($notification);
+
     }
 
     // عرض المستخدمين المحذوفين مؤقتًا (سلة المهملات)

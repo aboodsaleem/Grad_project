@@ -8,83 +8,77 @@
 <div class="page-content">
 
 					<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
-						<div class="col">
-							<div class="card radius-10 bg-gradient-deepblue">
-							 <div class="card-body">
-								<div class="d-flex align-items-center">
-									<h5 class="mb-0 text-white">9526</h5>
-									<div class="ms-auto">
-                                        <i class='bx bx-cart fs-3 text-white'></i>
-									</div>
-								</div>
-								<div class="progress my-3 bg-light-transparent" style="height:3px;">
-									<div class="progress-bar bg-white" role="progressbar" style="width: 55%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
-								<div class="d-flex align-items-center text-white">
-									<p class="mb-0">Total Orders</p>
-									<p class="mb-0 ms-auto">+4.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
-								</div>
-							</div>
-						  </div>
-						</div>
-						<div class="col">
-							<div class="card radius-10 bg-gradient-orange">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<h5 class="mb-0 text-white">$8323</h5>
-									<div class="ms-auto">
-                                        <i class='bx bx-dollar fs-3 text-white'></i>
-									</div>
-								</div>
-								<div class="progress my-3 bg-light-transparent" style="height:3px;">
-									<div class="progress-bar bg-white" role="progressbar" style="width: 55%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
-								<div class="d-flex align-items-center text-white">
-									<p class="mb-0">Total Revenue</p>
-									<p class="mb-0 ms-auto">+1.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
-								</div>
-							</div>
-						  </div>
-						</div>
-						<div class="col">
-							<div class="card radius-10 bg-gradient-ohhappiness">
-							<div class="card-body">
-								<div class="d-flex align-items-center">
-									<h5 class="mb-0 text-white">6200</h5>
-									<div class="ms-auto">
-                                        <i class='bx bx-group fs-3 text-white'></i>
-									</div>
-								</div>
-								<div class="progress my-3 bg-light-transparent" style="height:3px;">
-									<div class="progress-bar bg-white" role="progressbar" style="width: 55%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
-								<div class="d-flex align-items-center text-white">
-									<p class="mb-0">Visitors</p>
-									<p class="mb-0 ms-auto">+5.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
-								</div>
-							</div>
-						</div>
-						</div>
-						<div class="col">
-							<div class="card radius-10 bg-gradient-ibiza">
-							 <div class="card-body">
-								<div class="d-flex align-items-center">
-									<h5 class="mb-0 text-white">5630</h5>
-									<div class="ms-auto">
-                                        <i class='bx bx-envelope fs-3 text-white'></i>
-									</div>
-								</div>
-								<div class="progress my-3 bg-light-transparent" style="height:3px;">
-									<div class="progress-bar bg-white" role="progressbar" style="width: 55%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
-								<div class="d-flex align-items-center text-white">
-									<p class="mb-0">Messages</p>
-									<p class="mb-0 ms-auto">+2.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
-								</div>
-							</div>
-						 </div>
-						</div>
-					</div><!--end row-->
+
+    <!-- عدد المستخدمين -->
+    <div class="col">
+        <a href="{{ route('admin.users.list') }}" style="text-decoration:none;">
+            <div class="card radius-10 bg-gradient-deepblue cursor-pointer">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="mb-0 text-white">{{ $countUsers }}</h5>
+                        <div class="ms-auto">
+                            <i class='fas fa-users fs-3 text-white'></i>
+                        </div>
+                    </div>
+                    <div class="progress my-3 bg-light-transparent" style="height:3px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 55%"></div>
+                    </div>
+                    <div class="d-flex align-items-center text-white">
+                        <p class="mb-0">Total Users</p>
+                        <p class="mb-0 ms-auto">+4.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- عدد الحجوزات -->
+    <div class="col">
+        <a href="{{ route('admin.bookings.index') }}" style="text-decoration:none;">
+            <div class="card radius-10 bg-gradient-orange cursor-pointer">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="mb-0 text-white">{{ $countBookings }}</h5>
+                        <div class="ms-auto">
+                            <i class='fas fa-calendar-check fs-3 text-white'></i>
+                        </div>
+                    </div>
+                    <div class="progress my-3 bg-light-transparent" style="height:3px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 55%"></div>
+                    </div>
+                    <div class="d-flex align-items-center text-white">
+                        <p class="mb-0">Total Bookings</p>
+                        <p class="mb-0 ms-auto">+1.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- عدد الخدمات -->
+    <div class="col">
+        <a href="{{ route('admin.services.index') }}" style="text-decoration:none;">
+            <div class="card radius-10 bg-gradient-ibiza cursor-pointer">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <h5 class="mb-0 text-white">{{ $countServices }}</h5>
+                        <div class="ms-auto">
+                            <i class="fas fa-tools fs-3 text-white"></i>
+                        </div>
+                    </div>
+                    <div class="progress my-3 bg-light-transparent" style="height:3px;">
+                        <div class="progress-bar bg-white" role="progressbar" style="width: 55%"></div>
+                    </div>
+                    <div class="d-flex align-items-center text-white">
+                        <p class="mb-0">Total Services</p>
+                        <p class="mb-0 ms-auto">+2.2%<span><i class='bx bx-up-arrow-alt'></i></span></p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+</div>
 
 
 
@@ -94,208 +88,106 @@
 
 
 
-					  <div class="card radius-10">
-						<div class="card-body">
-							<div class="d-flex align-items-center">
-								<div>
-									<h5 class="mb-0">Orders Summary</h5>
-								</div>
-								<div class="font-22 ms-auto"><i class="bx bx-dots-horizontal-rounded"></i>
-								</div>
-							</div>
-							<hr>
-							<div class="table-responsive">
-								<table class="table align-middle mb-0">
-									<thead class="table-light">
-										<tr>
-											<th>Order id</th>
-											<th>Product</th>
-											<th>Customer</th>
-											<th>Date</th>
-											<th>Price</th>
-											<th>Status</th>
-											<th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>#897656</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="{{ asset('adminbackend/assets/images/icons/chair.png') }}" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">Light Blue Chair</h6>
-													</div>
-												</div>
-											</td>
-											<td>Brooklyn Zeo</td>
-											<td>12 Jul 2020</td>
-											<td>$64.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-info text-info w-100">In Progress</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>#987549</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="{{ asset('adminbackend/assets/images/icons/shoes.png') }}" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">Green Sport Shoes</h6>
-													</div>
-												</div>
-											</td>
-											<td>Martin Hughes</td>
-											<td>14 Jul 2020</td>
-											<td>$45.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-success text-success w-100">Completed</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>#685749</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="{{ asset('adminbackend/assets/images/icons/headphones.png') }}" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">Red Headphone 07</h6>
-													</div>
-												</div>
-											</td>
-											<td>Shoan Stephen</td>
-											<td>15 Jul 2020</td>
-											<td>$67.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-danger text-danger w-100">Cancelled</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>#887459</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="{{ asset('adminbackend/assets/images/icons/idea.png') }}" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">Mini Laptop Device</h6>
-													</div>
-												</div>
-											</td>
-											<td>Alister Campel</td>
-											<td>18 Jul 2020</td>
-											<td>$87.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-success text-success w-100">Completed</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>#335428</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">Purple Mobile Phone</h6>
-													</div>
-												</div>
-											</td>
-											<td>Keate Medona</td>
-											<td>20 Jul 2020</td>
-											<td>$75.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-info text-info w-100">In Progress</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>#224578</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">Smart Hand Watch</h6>
-													</div>
-												</div>
-											</td>
-											<td>Winslet Maya</td>
-											<td>22 Jul 2020</td>
-											<td>$80.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-danger text-danger w-100">Cancelled</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td>#447896</td>
-											<td>
-												<div class="d-flex align-items-center">
-													<div class="recent-product-img">
-														<img src="" alt="">
-													</div>
-													<div class="ms-2">
-														<h6 class="mb-1 font-14">T-Shirt Blue</h6>
-													</div>
-												</div>
-											</td>
-											<td>Emy Jackson</td>
-											<td>28 Jul 2020</td>
-											<td>$96.00</td>
-											<td>
-												<div class="badge rounded-pill bg-light-success text-success w-100">Completed</div>
-											</td>
-											<td>
-												<div class="d-flex order-actions">	<a href="javascript:;" class=""><i class="bx bx-cog"></i></a>
-													<a href="javascript:;" class="ms-4"><i class="bx bx-down-arrow-alt"></i></a>
-												</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					</div>
+					 <div class="card radius-10">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+				<div>
+					<h5 class="mb-0">All Bookings</h5>
+				</div>
+				<div class="font-22 ms-auto">
+                    {{-- <a href="{{ route('admin.bookings.create') }}" class="btn btn-success"> <i class="fas fa-plus"></i> Add New Service</a> --}}
+				</div>
+				</div>
+				<hr>
+            <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Service Name</th>
+                        <th>Service Type</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Date</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($bookings as $booking)
+                        <tr>
+                            <td class="fw-bold">{{ $booking->id }}</td>
+                            <td>{{ $booking->service->name ?? 'N/A' }}</td>
+                            <td>{{ $booking->service->serviceType ?? 'N/A' }}</td>
+                            <td>{{ $booking->customer->username ?? '-' }}</td>
+                            <td>{{ $booking->booking_date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($booking->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('h:i A') }}</td>
+                            <td>{{ $booking->service->price ?? 'N/A' }}</td>
+                            <td>
+                                @php
+                                    $status = $booking->status;
+                                    $bgClass = match($status) {
+                                        'pending' => 'badge rounded-pill bg-light-warning text-warning w-100',
+                                        'confirmed' => 'badge rounded-pill bg-light-info text-info w-100',
+                                        'completed' => 'badge rounded-pill bg-light-success text-success w-100',
+                                        'cancelled' => 'badge rounded-pill bg-light-danger text-danger w-100',
+                                        default => 'bg-secondary text-white',
+                                    };
+                                @endphp
+                                <span class="badge {{ $bgClass }} p-2">
+                                    {{ ucfirst($status) }}
+                                </span>
+                            </td>
+                            <td>
+    @if ($booking->status === 'pending')
+        <form action="{{ route('admin.bookings.accept', $booking->id) }}" method="POST" class="d-inline me-1">
+            @csrf
+            <button class="btn btn-success btn-sm">Accept</button>
+        </form>
+        <form action="{{ route('admin.bookings.reject', $booking->id) }}" method="POST" class="d-inline me-1">
+            @csrf
+            <button class="btn btn-danger btn-sm">Reject</button>
+        </form>
+    @elseif ($booking->status === 'confirmed')
+        <form action="{{ route('admin.bookings.complete', $booking->id) }}" method="POST" class="d-inline me-1">
+            @csrf
+            <button class="btn btn-primary btn-sm">Mark as Completed</button>
+        </form>
+    @else
+        <span class="text-muted">{{ ucfirst($booking->status) }}</span>
+    @endif
 
-			</div>
+    {{-- زر الحذف موجود دائماً لكن بحجم صغير ومنفصل --}}
+    <form action="{{ route('admin.bookings.destroy', $booking->id) }}" method="POST" class="d-inline ms-2">
+        @csrf
+        @method('DELETE')
+        <button type="button" class="btn btn-warning btn-sm delete-btn"
+            data-url="{{ route('admin.bookings.destroy', $booking->id) }}"
+            data-title="هل أنت متأكد من حذف هذا الحجز؟"
+            data-confirm="نعم، احذف"
+            data-cancel="إلغاء"
+            data-method="DELETE"
+            title="حذف">
+            <i class="fas fa-trash-alt mb-0 mt-0"></i>
+        </button>
+    </form>
+</td>
+
+                        </tr>
+                    @empty
+                        <tr><td colspan="6" class="text-center">  Not Found Bookings</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
 
 @endsection
 
 @section('js')
+@include('admin.partials.sweetalert_actions')
 
 @endsection

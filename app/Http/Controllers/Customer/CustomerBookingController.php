@@ -3,74 +3,103 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Booking;
-use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Booking;
+use App\Models\Service;
+use Carbon\Carbon;
 
 class CustomerBookingController extends Controller
 {
-    // عرض الخدمات المتاحة ليتم الحجز منها
-    public function services()
-    {
-        $services = Service::where('status', 'approved')->paginate(15);
-        return view('customer.services.index', compact('services'));
-    }
-
-    // عرض الحجوزات الخاصة بالعميل
+    // عرض كل حجوزات العميل
     public function index()
     {
-        $customerId = Auth::id();
-        $bookings = Booking::with(['service', 'serviceProvider'])
-            ->where('customer_id', $customerId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
+        $bookings = Booking::where('user_id', Auth::id())->latest()->get();
         return view('customer.bookings.index', compact('bookings'));
     }
 
-    // عرض نموذج حجز خدمة معينة
-    public function create($serviceId)
+    // عرض نموذج إنشاء الحجز
+    public function create()
     {
-        $service = Service::findOrFail($serviceId);
-        return view('customer.bookings.create', compact('service'));
+        $services = Service::with('serviceProvider')->get();
+        return view('customer.bookings.create', compact('services'));
     }
 
-    // تخزين الحجز
-    public function store(Request $request, $serviceId)
-    {
-        $request->validate([
-            'booking_date' => 'required|date|after_or_equal:today',
-            'notes' => 'nullable|string|max:500',
-        ]);
+    // حفظ الحجز
+  public function store(Request $request)
+{
+    $request->validate([
+        'service_id' => 'required|exists:services,id',
+        'service_provider_id' => 'required|exists:users,id',
+        'booking_date' => 'required|date',
+        'start_time' => 'required',
+        'end_time' => 'required|after:start_time',
+    ]);
 
-        $service = Service::findOrFail($serviceId);
+    // تحقق من وقت بداية الحجز (start_time)
+    $startTime = Carbon::createFromFormat('H:i', $request->start_time);
+    $endTime = Carbon::createFromFormat('H:i', $request->end_time);
 
-        Booking::create([
-            'service_id' => $service->id,
-            'customer_id' => Auth::id(),
-            'service_provider_id' => $service->service_provider_id,
-            'status' => 'pending',
-            'booking_date' => $request->booking_date,
-            'notes' => $request->notes,
-        ]);
+    $allowedStart = Carbon::createFromTime(8, 0);  // 08:00
+    $allowedEnd = Carbon::createFromTime(20, 0);   // 20:00
 
-        return redirect()->route('customer.bookings.index')->with('success', 'تم إنشاء الحجز بنجاح');
+    if ($startTime->lt($allowedStart) || $startTime->gte($allowedEnd)) {
+
+        $notification = [
+        'message' => 'Booking start time must be between 08:00 AM and 08:00 PM',
+        'alert-type' => 'warning'
+    ];
+
+    return redirect()->back()->with($notification);
+
+
     }
 
-    // إلغاء الحجز
-    public function cancel($id)
-    {
-        $customerId = Auth::id();
-        $booking = Booking::where('customer_id', $customerId)->findOrFail($id);
+    if ($endTime->gt($allowedEnd) || $endTime->lte($allowedStart)) {
 
-        if (in_array($booking->status, ['pending', 'accepted'])) {
-            $booking->status = 'canceled';
-            $booking->save();
+        $notification = [
+        'message' => 'Booking end time must be between 08:00 AM and 08:00 PM',
+        'alert-type' => 'warning'
+    ];
 
-            return redirect()->back()->with('success', 'تم إلغاء الحجز بنجاح');
-        }
-
-        return redirect()->back()->with('error', 'لا يمكن إلغاء هذا الحجز');
+    return redirect()->back()->with($notification);
     }
+
+    Booking::create([
+        'user_id' => Auth::id(),
+        'service_id' => $request->service_id,
+        'service_provider_id' => $request->service_provider_id,
+        'booking_date' => $request->booking_date,
+        'start_time' => $request->start_time,
+        'end_time' => $request->end_time,
+        'description' => $request->description,
+        'status' => 'pending',
+    ]);
+
+    $notification = [
+        'message' => 'Booking Added successfully',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()->back()->with($notification);
 }
+
+
+    // دالة إلغاء الحجز (خاصة إضافية غير موجودة في resource)
+     public function destroy($id)
+    {
+        $booking = Booking::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $booking->delete();
+
+
+
+        $notification = [
+        'message' => 'Booking cancelled successfully.',
+        'alert-type' => 'success'
+    ];
+
+    return redirect(url()->previous())->with($notification);
+}
+
+}
+

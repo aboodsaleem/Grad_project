@@ -8,12 +8,32 @@ use Illuminate\Http\Request;
 
 class AdminServiceController extends Controller
 {
-    public function index()
-    {
-        // جلب كل الخدمات مع مزود الخدمة (User) المرتبط
-        $services = Service::with('serviceProvider')->orderBy('id', 'desc')->paginate(10);
-        return view('admin.services.index', compact('services'));
+    public function index(Request $request)
+{
+    $query = Service::with('serviceProvider');
+
+    // بحث حسب نوع الخدمة
+    if ($request->filled('serviceType')) {
+        $query->where('serviceType', $request->serviceType);
     }
+
+    // بحث حسب اسم مزود الخدمة
+    if ($request->filled('provider_name')) {
+        $query->whereHas('serviceProvider', function ($q) use ($request) {
+            $q->where('username', 'like', '%' . $request->provider_name . '%');
+        });
+    }
+
+    // بحث حسب السعر
+    if ($request->filled('price')) {
+        $query->where('price', $request->price);
+    }
+
+    $services = $query->orderBy('id', 'desc')->paginate(10);
+
+    return view('admin.services.index', compact('services'));
+}
+
 
     public function create()
     {
@@ -23,37 +43,43 @@ class AdminServiceController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'service_provider_id' => 'required|exists:users,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'serviceType' => 'required|in:Electrical,Maintenance,Repairing,Cleaning,Washing',
+        'description' => 'required|string',
+        'price' => 'required|numeric|min:0',
+        'service_provider_id' => 'required|exists:users,id',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-            $uploadPath = public_path('upload/services/');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-            $image->move($uploadPath, $name_gen);
-            $imagePath = 'upload/services/' . $name_gen;
-        }
+    $imagePath = null;
 
-        Service::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'price' => $request->price,
-            'service_provider_id' => $request->service_provider_id,
-            'image' => $imagePath,
-        ]);
-
-        return redirect()->route('admin.services.index')->with('success', 'تم إضافة الخدمة بنجاح');
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
+        $imageName = date('YmdHi') . $image->getClientOriginalName();
+        $image->move(public_path('upload/services'), $imageName);
+        $imagePath = 'upload/services/' . $imageName;
     }
+
+    Service::create([
+        'name' => $request->name,
+        'serviceType' => $request->serviceType,
+        'description' => $request->description,
+        'price' => $request->price,
+        'service_provider_id' => $request->service_provider_id,
+        'image' => $imagePath,
+    ]);
+
+    $notification = [
+        'message' => 'Service Added successfully',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()->route('admin.services.index')->with($notification);
+}
+
+
 
     public function edit($id)
     {
@@ -63,40 +89,46 @@ class AdminServiceController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $service = Service::findOrFail($id);
+{
+    $service = Service::findOrFail($id);
 
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'service_provider_id' => 'required|exists:users,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'serviceType' => 'required|in:Electrical,Maintenance,Repairing,Cleaning,Washing',
+        'description' => 'required|string',
+        'price' => 'required|numeric|min:0',
+        'service_provider_id' => 'required|exists:users,id',
+        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        if ($request->hasFile('image')) {
-            if ($service->image && file_exists(public_path($service->image))) {
-                unlink(public_path($service->image));
-            }
+    $service->name = $request->name;
+    $service->serviceType = $request->serviceType;
+    $service->description = $request->description;
+    $service->price = $request->price;
+    $service->service_provider_id = $request->service_provider_id;
 
-            $image = $request->file('image');
-            $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
-            $uploadPath = public_path('upload/services/');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0755, true);
-            }
-            $image->move($uploadPath, $name_gen);
-            $service->image = 'upload/services/' . $name_gen;
+    if ($request->hasFile('image')) {
+        // حذف الصورة القديمة
+        if ($service->image && file_exists(public_path($service->image))) {
+            unlink(public_path($service->image));
         }
 
-        $service->title = $request->title;
-        $service->description = $request->description;
-        $service->price = $request->price;
-        $service->service_provider_id = $request->service_provider_id;
-        $service->save();
-
-        return redirect()->route('admin.services.index')->with('success', 'تم تحديث الخدمة بنجاح');
+        $image = $request->file('image');
+        $imageName = date('YmdHi') . $image->getClientOriginalName();
+        $image->move(public_path('upload/services'), $imageName);
+        $service->image = 'upload/services/' . $imageName;
     }
+
+    $service->save();
+
+    $notification = [
+        'message' => 'Service updated successfully',
+        'alert-type' => 'success'
+    ];
+
+    return redirect()->route('admin.services.index')->with($notification);
+}
+
 
     public function destroy($id)
     {
@@ -108,6 +140,13 @@ class AdminServiceController extends Controller
 
         $service->delete();
 
-        return redirect()->route('admin.services.index')->with('success', 'تم حذف الخدمة بنجاح');
+        $notification = [
+        'message' => 'Service deleted successfully',
+        'alert-type' => 'success'
+    ];
+        return redirect()
+            ->route('admin.services.index')
+            ->with($notification);
+
     }
 }

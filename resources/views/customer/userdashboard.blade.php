@@ -11,6 +11,8 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" >
 
   </head>
@@ -973,7 +975,7 @@
                 class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
               >
                 <img
-                  src="public/assest/ahmed.jpeg"
+                  src="{{ asset('frontend/public/assest/ahmed.jpeg') }}"
                   alt="provider-image"
                   class="provider-avatar rounded-circle object-fit-cover"
                 />
@@ -1011,7 +1013,7 @@
                 class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
               >
                 <img
-                  src="public/assest/anime-boy-chill-digital-art-hd-wallpaper-uhdpaper.com-284@0@j.jpg"
+                  src="{{ asset('frontend/public/assest/anime-boy-chill-digital-art-hd-wallpaper-uhdpaper.com-284@0@j.jpg') }}"
                   alt="provider-image"
                   class="provider-avatar rounded-circle object-fit-cover"
                 />
@@ -1049,7 +1051,7 @@
                 class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
               >
                 <img
-                  src="public/assest/DavidChen.jpg"
+                  src="{{ asset('frontend/public/assest/DavidChen.jpg') }}"
                   alt="provider-image"
                   class="provider-avatar rounded-circle object-fit-cover"
                 />
@@ -1091,12 +1093,12 @@
               class="profile-header bg-white d-flex align-items-center gap-20"
             >
               <img
-                src="/public/assest/amiii.png"
+                src="{{ asset(Auth::user()->photo ?? 'upload/no_image.jpg') }}"
                 alt="Profile Image"
                 class="object-fit-cover rounded-circle profile-avatar"
               />
               <div class="profile-info">
-                <h2>Abood Bilal</h2>
+                <h2>{{ $customer->username }}</h2>
                 <p>Customer since 2025</p>
                 <div class="d-flex gap-20 text-gray mt-10 profile-stats">
                   <span>10 Completed Bookings</span>
@@ -1119,27 +1121,27 @@
                 <div class="info-grid d-grid gap-20 mt-20">
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Full Name</label>
-                    <span>Abood Bilal</span>
+                    <span>{{ $customer->username }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Phone Number</label>
-                    <span>+966 55 123 4567</span>
+                    <span>{{ $customer->phone }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Email</label>
-                    <span>a@b.com</span>
+                    <span>{{ $customer->email }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">City</label>
-                    <span>Gaza</span>
+                    <span>{{ $customer->city }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Address</label>
-                    <span>Tel-Alhaw Gaza-strip - Palestine</span>
+                    <span>{{ $customer->address }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Date of Birth</label>
-                    <span>Dec 31, 2002</span>
+                    <span>{{ $customer->date_of_birth }}</span>
                   </div>
                 </div>
               </div>
@@ -1695,7 +1697,7 @@
               >
                 <div class="modal-image rounded text-center">
                   <img
-                    src="public/assest/sarah.jpg"
+                    src="{{ asset('frontend/public/assest/sarah.jpg') }}"
                     alt="provider-name"
                     class="img-fluid rounded"
                     width="150"
@@ -1822,7 +1824,7 @@
             <div class="text-center">
               <div class="modal-image text-center">
                 <img
-                  src="/public/assest/6991150.jpg"
+                  src="{{ asset('frontend//public/assest/6991150.jpg') }}"
                   alt="provider-name"
                   class="rounded-circle object-fit-cover provider-image mt-2"
                   id="detailsAvatar"
@@ -1884,55 +1886,105 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form>
-                <div class="input-group mb-10">
+               <form action="{{ route('customer.update',$customer->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <!-- Full Name -->
+                <div class="mb-3">
                   <label for="fullName" class="form-label">Full Name</label>
                   <input
+                    name="username"
                     type="text"
+                    class="form-control"
                     id="fullName"
-                    name="fullName"
                     placeholder="Enter full name"
-                    required
+                    value="{{ $customer->username }}"
                   />
                 </div>
-                <div class="input-group mb-10">
-                  <label for="city" class="form-label">Your City</label>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Phone Number</label>
                   <input
-                    type="text"
-                    id="city"
+                    name="phone"
+                    type="tel"
+                    class="form-control"
+                    id="phone"
+                    placeholder="+966 50 123 4567"
+                    value="{{ $customer->phone }}"
+                  />
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    name="email"
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    placeholder="eissam@example.com"
+                    value="{{ $customer->email }}"
+                  />
+                </div>
+
+                <!-- City -->
+                <div class="mb-3">
+                  <label for="city" class="form-label">City</label>
+                  <input
                     name="city"
-                    placeholder="Enter your city"
-                  />
-                </div>
-                <div class="input-group mb-10">
-                  <label for="address" class="form-label">Your Address</label>
-                  <input
                     type="text"
-                    id="address"
+                    class="form-control"
+                    id="city"
+                    placeholder="City"
+                    value="{{ $customer->city }}"
+                  />
+                </div>
+
+                <!-- Address -->
+                <div class="mb-3">
+                  <label for="address" class="form-label">Address</label>
+                  <input
                     name="address"
-                    placeholder="Enter your address"
+                    type="text"
+                    class="form-control"
+                    id="address"
+                    placeholder="Address"
+                    value="{{ $customer->address }}"
                   />
                 </div>
-                <div class="input-group mb-10">
-                  <label for="avatar" class="form-label">Your Image</label>
+
+                <!-- Data Of Birthday -->
+                <div class="mb-3">
+                  <label for="dob" class="form-label">Date Of BirthDay</label>
                   <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/*"
-                    placeholder="Enter the url of your image"
-                  />
-                </div>
-                <div class="input-group mb-10">
-                  <label for="dob" class="form-label">Date of Birth</label>
-                  <input
+                    name="date_of_birth"
                     type="date"
+                    class="form-control"
                     id="dob"
-                    name="dob"
-                    placeholder="Enter birth of day"
+                    placeholder="Date Of BirthDay"
+                    value="{{ $customer->date_of_birth }}"
                   />
                 </div>
-                <div class="form-actions mt-3">
+
+                <!-- Profile Image Upload -->
+                <div class="d-flex align-items-center justify-content-between">
+                  <label
+                    for="profileImageInput"
+                    class="small mb-0"
+                    style="width: 150px"
+                    >Upload Image</label
+                  >
+                  <input
+                    name="photo"
+                    type="file"
+                    class="form-control form-control-sm flex-fill"
+                    accept="image/*"
+                    id="profileImageInput"
+                  />
+                </div>
+
+                <!-- Save Button -->
+                <div class="d-flex justify-content-end mt-5">
                   <button type="submit" class="btn btn-primary">
                     Save Changes
                   </button>
@@ -1965,16 +2017,21 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="modalForm">
+              <form id="modalForm" method="POST" action="{{ route('customer.update.password',$customer->id) }}">
+                @csrf
                 <div class="form-group">
                   <label for="modalInput">Enter new value:</label>
                   <input
+                    name="new_password"
                     type="text"
                     id="modalInput"
                     class="form-control"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
                   />
+                    @error('new_password')
+                    <span class="text-danger">{{ $message }}</span>
+                    @enderror
                 </div>
 
                 <div class="mt-4 text-end">
@@ -2017,15 +2074,18 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="emailUpdateForm">
-                <div class="form-group">
+        <form id="emailUpdateForm" method="POST" action="{{ route('customer.update.email',$customer->id) }}">
+            @csrf
+            <div class="form-group">
                   <label for="modalInput">Enter new value:</label>
                   <input
+                    name="email"
                     type="text"
                     id="emailInput"
                     class="form-control emailInput"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
+                    value="{{ $customer->email}}"
                   />
                 </div>
 
@@ -2069,16 +2129,22 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="phoneUpdateForm">
+            <form id="phoneUpdateForm" method="POST" action="{{ route('customer.update.phone',$customer->id) }}">
+                @csrf
                 <div class="form-group">
                   <label for="phoneInput">Enter new value:</label>
                   <input
+                    name="phone"
                     type="text"
                     id="phoneInput"
                     class="form-control"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
+                    value="{{ $customer->phone}}"
                   />
+                @error('phone')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
                 </div>
 
                 <div class="mt-4 text-end">

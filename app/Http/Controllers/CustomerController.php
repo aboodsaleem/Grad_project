@@ -10,60 +10,56 @@ use Illuminate\Support\Facades\Hash;
 class CustomerController extends Controller
 {
 
-  public function customerDashboard(){
-
+    public function customerDashboard(){
         $id = Auth::user()->id;
-        $userdata = User::find($id);
-        return view('customer.userdashboard' , compact('userdata'));
-  }
+        $customer = User::find($id);
 
-public function customerProfileupdate(Request $request){
-    $request->validate([
-    'name' => 'required|string|max:255',
-    'username' => 'required|string|max:255|unique:users,username,' . Auth::id(),
-    'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
-    'phone' => 'nullable|string|max:20',
-    'address' => 'nullable|string|max:255',
-    'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-]);
+        return view('customer.userdashboard',compact('customer'));
+    }
+
+
+
+
+public function updateProfile(Request $request){
 
 
     $id = Auth::user()->id;
-    $user = User::findOrFail($id);
+    $customer = User::findOrFail($id);
 
-    $save_url = $user->photo; // إذا لم يتم رفع صورة جديدة، نستخدم القديمة
+    $save_url = $customer->photo; // إذا لم يتم رفع صورة جديدة، نستخدم القديمة
 
     // ✅ إذا تم رفع صورة جديدة
     if ($request->hasFile('photo')) {
         $image = $request->file('photo');
         $name_gen = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
 
-        $uploadPath = public_path('upload/user_images/');
+        $uploadPath = public_path('upload/customer_images/');
         if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0755, true);
         }
 
-        // ✅ حذف الصورة القديمة إن وُجدت
-        if ($user->photo && file_exists(public_path($user->photo))) {
-            unlink(public_path($user->photo));
+        if ($customer->photo && file_exists(public_path($customer->photo))) {
+            unlink(public_path($customer->photo));
         }
 
-        // ✅ تعديل حجم الصورة وحفظها
 
 
           $image->move($uploadPath, $name_gen);
 
-        $save_url = 'upload/user_images/' . $name_gen;
+        $save_url = 'upload/customer_images/' . $name_gen;
     }
 
     // ✅ تحديث البيانات
-    $user->update([
-        'name' => $request->name,
+    $customer->update([
+
         'username' => $request->username,
         'email' => $request->email,
         'phone' =>$request->phone,
         'address' =>$request->address,
+        'date_of_birth' =>$request->date_of_birth,
+        'city' =>$request->city,
         'photo' => $save_url,
+
     ]);
 
     // ✅ إشعار النجاح
@@ -74,30 +70,86 @@ public function customerProfileupdate(Request $request){
 
     return redirect()->back()->with($notification);
 }
-public function userUpdatePassword(Request $request)
+
+
+
+public function UpdatePassword(Request $request)
 {
     $id = Auth::user()->id;
-    $vendor = User::findOrFail($id);
+    $customer = User::findOrFail($id);
+
+    // التحقق فقط من كلمة المرور الجديدة
     $request->validate([
-        'old_password' => 'required',
-        'new_password' => 'required|confirmed|min:8|different:old_password',
+        'new_password' => 'required|min:8',
     ], [
-        'old_password.required' => 'يرجى إدخال كلمة المرور القديمة.',
         'new_password.required' => 'يرجى إدخال كلمة المرور الجديدة.',
-        'new_password.confirmed' => 'تأكيد كلمة المرور غير مطابق.',
         'new_password.min' => 'كلمة المرور يجب أن تكون 8 أحرف على الأقل.',
-        'new_password.different' => 'كلمة المرور الجديدة يجب أن تختلف عن القديمة.',
     ]);
 
-    if (!Hash::check($request->old_password, Auth::user()->password)) {
-        return back()->with('error', 'كلمة المرور القديمة غير صحيحة.');
-    }
-
-    $vendor->update([
+    // تحديث كلمة المرور
+    $customer->update([
         'password' => Hash::make($request->new_password),
     ]);
+        $notification = [
+        'message' => 'تم تحديث  بنجاح',
+        'alert-type' => 'success'
+    ];
 
-    return back()->with('status', 'تم تغيير كلمة المرور بنجاح.');
+    return back()->with($notification);
+}
+public function Updateemail(Request $request)
+{
+    $id = Auth::user()->id;
+    $customer = User::findOrFail($id);
+
+    // التحقق فقط من كلمة المرور الجديدة
+$request->validate([
+    'email' => 'required|email|unique:users,email',
+], [
+    'email.required' => 'يرجى إدخال البريد الإلكتروني.',
+    'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
+    'email.unique' => 'هذا البريد الإلكتروني مستخدم بالفعل.',
+]);
+
+
+    // تحديث كلمة المرور
+    $customer->update([
+        'email' => $request->email,
+    ]);
+        $notification = [
+        'message' => 'تم تحديث  بنجاح',
+        'alert-type' => 'success'
+    ];
+
+    return back()->with($notification);
+}
+
+public function Updatephone(Request $request)
+{
+    $id = Auth::user()->id;
+    $customer = User::findOrFail($id);
+
+    // التحقق فقط من كلمة المرور الجديدة
+$request->validate([
+    'phone' => 'required|numeric|digits_between:8,15|unique:users,phone',
+], [
+    'phone.required' => 'يرجى إدخال رقم الهاتف.',
+    'phone.numeric' => 'يجب أن يحتوي رقم الهاتف على أرقام فقط.',
+    'phone.digits_between' => 'رقم الهاتف يجب أن يكون بين 8 و15 رقمًا.',
+    'phone.unique' => 'رقم الهاتف مستخدم بالفعل.',
+]);
+
+
+    // تحديث كلمة المرور
+    $customer->update([
+        'phone' => $request->phone,
+    ]);
+        $notification = [
+        'message' => 'تم تحديث  بنجاح',
+        'alert-type' => 'success'
+    ];
+
+    return back()->with($notification);
 }
 
 public function customerDestroy(Request $request){
@@ -106,10 +158,7 @@ public function customerDestroy(Request $request){
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-        $notification = [
-        'message' =>  'log out success',
-        'alert-type' => 'success'
-       ];
-        return redirect()->route('login')->with($notification);
+
+        return redirect()->route('login');
 }
 }

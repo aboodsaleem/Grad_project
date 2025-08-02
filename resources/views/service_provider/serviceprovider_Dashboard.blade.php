@@ -19,8 +19,10 @@
   </head>
   <body>
     <div class="dashboard-container d-flex min-vh-100">
-      <!-- Sidebar -->
+
 @include('service_provider.body.sidebar')
+
+
 
       <!-- Main Content -->
       <main class="main-content flex-grow-1" id="mainContent">
@@ -341,7 +343,7 @@ Effective pest control services using safe and approved chemicals.
                   class="rounded-circle"
                   width="60"
                   height="60"
-                  onerror="this.src='public/assest/default-customer-image.png';"
+                  onerror="this.src='{{ asset('frontend/public/assest/default-customer-image.png') }}';"
                 />
 
                 <!-- Review Content -->

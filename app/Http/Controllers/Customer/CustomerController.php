@@ -17,28 +17,28 @@ class CustomerController extends Controller
         $id = Auth::user()->id;
         $userdata = User::find($id);
         $services = Service::with('serviceProvider')->latest()->get();
-        $bookings = Booking::with(['service', 'serviceProvider'])->where('user_id', Auth::id())->latest()->get();
         $latestServices = Service::with('serviceProvider')->latest()->take(3)->get();
-        return view('customer.userdashboard' , compact('userdata','services','latestServices','bookings'));
+        $bookings = Booking::with(['service', 'serviceProvider'])->where('user_id', Auth::id())->latest()->get();
+        $recentBookings = Booking::with('serviceProvider') // تأكد من وجود علاقة serviceProvider
+        ->latest()
+        ->take(3)
+        ->get();
+        return view('customer.userdashboard' , compact('userdata','services','latestServices','bookings', 'recentBookings'));
   }
 
+    public function customerlogin(){
+
+        return view('auth.login');
+    }
+
+
 public function customerProfileupdate(Request $request){
+
+
     $id = Auth::user()->id;
     $userdata = User::findOrFail($id);
 
     $save_url = $userdata->photo; // إذا لم يتم رفع صورة جديدة، نستخدم القديمة
-}
-
-
-
-
-public function updateProfile(Request $request){
-
-
-    $id = Auth::user()->id;
-    $customer = User::findOrFail($id);
-
-    $save_url = $customer->photo; // إذا لم يتم رفع صورة جديدة، نستخدم القديمة
 
     // ✅ إذا تم رفع صورة جديدة
     if ($request->hasFile('photo')) {
@@ -50,8 +50,8 @@ public function updateProfile(Request $request){
             mkdir($uploadPath, 0755, true);
         }
 
-        if ($customer->photo && file_exists(public_path($customer->photo))) {
-            unlink(public_path($customer->photo));
+        if ($userdata->photo && file_exists(public_path($userdata->photo))) {
+            unlink(public_path($userdata->photo));
         }
 
 
@@ -63,7 +63,7 @@ public function updateProfile(Request $request){
 
     // ✅ تحديث البيانات
 
-    $customer->update([
+    $userdata->update([
 
         'username' => $request->username,
         'email' => $request->email,
@@ -86,10 +86,10 @@ public function updateProfile(Request $request){
 
 
 
-public function UpdatePassword(Request $request)
+public function customerUpdatePassword(Request $request)
 {
     $id = Auth::user()->id;
-    $customer = User::findOrFail($id);
+    $userdata = User::findOrFail($id);
 
     // التحقق فقط من كلمة المرور الجديدة
     $request->validate([
@@ -100,7 +100,7 @@ public function UpdatePassword(Request $request)
     ]);
 
     // تحديث كلمة المرور
-    $customer->update([
+    $userdata->update([
         'password' => Hash::make($request->new_password),
     ]);
         $notification = [
@@ -113,7 +113,7 @@ public function UpdatePassword(Request $request)
 public function Updateemail(Request $request)
 {
     $id = Auth::user()->id;
-    $customer = User::findOrFail($id);
+    $userdata = User::findOrFail($id);
 
     // التحقق فقط من كلمة المرور الجديدة
 $request->validate([
@@ -126,7 +126,7 @@ $request->validate([
 
 
     // تحديث كلمة المرور
-    $customer->update([
+    $userdata->update([
         'email' => $request->email,
     ]);
         $notification = [
@@ -140,7 +140,7 @@ $request->validate([
 public function Updatephone(Request $request)
 {
     $id = Auth::user()->id;
-    $customer = User::findOrFail($id);
+    $userdata = User::findOrFail($id);
 
     // التحقق فقط من كلمة المرور الجديدة
 $request->validate([
@@ -154,7 +154,7 @@ $request->validate([
 
 
     // تحديث كلمة المرور
-    $customer->update([
+    $userdata->update([
         'phone' => $request->phone,
     ]);
         $notification = [

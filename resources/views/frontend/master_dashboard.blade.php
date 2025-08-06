@@ -37,7 +37,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title fw-bold" id="detailsModalLabel">
-                
+
             </h5>
             <button
               type="button"
@@ -80,7 +80,7 @@
           </div>
 
           <div class="modal-footer justify-content-between">
-            <a class="btn btn-primary" href="login.html">Book Now</a>
+            <a class="btn btn-primary" href="{{ route('login') }}">Book Now</a>
             <button class="btn btn-secondary" data-bs-dismiss="modal">
               Close
             </button>

@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(ServiceSeeder::class);
+
         $this->call(BookingSeeder::class);
 
         // \App\Models\User::factory(10)->create();

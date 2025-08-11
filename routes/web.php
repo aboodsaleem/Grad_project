@@ -68,7 +68,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
 
     // Email
-        Route::get('email/compose', [EmailController::class, 'email_compose'])->name('email_compose');
+    Route::get('email/compose', [EmailController::class, 'email_compose'])->name('email_compose');
 
     // خدمات الأدمن: رؤية وتعديل وحذف (لا يوجد إنشاء)
     Route::resource('services', AdminServiceController::class);
@@ -99,7 +99,7 @@ Route::middleware(['auth', 'role:service_provider'])->prefix('provider')->name('
     });
     // خدمات مزود الخدمة: كل العمليات CRUD
     Route::resource('services', ProviderServiceController::class);
-        Route::get('/bookings', [ProviderBookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings', [ProviderBookingController::class, 'index'])->name('bookings.index');
     Route::post('/bookings/{id}/accept', [ProviderBookingController::class, 'accept'])->name('bookings.accept');
     Route::post('/bookings/{id}/reject', [ProviderBookingController::class, 'reject'])->name('bookings.reject');
     Route::post('/bookings/{id}/complete', [ProviderBookingController::class, 'complete'])->name('bookings.complete');

@@ -4,25 +4,16 @@
 
 <div class="tab-content page-content">
         <!-- Home Page -->
-        <div
-          class="tab-pane fade show active home-page"
-          id="home"
-          role="tabpanel"
-        >
-          <section class="landing">
-            <div
-              class="container d-flex justify-content-lg-between justify-content-center align-items-center gap-5 flex-wrap flex-lg-nowrap text-center text-md-start"
-            >
-              <div class="col-lg-6 col intro">
-                <h1>Professional Home Services at Your Fingertips</h1>
-                <p class="fs-5 mb-5">
-                  Book trusted professionals for all your home maintenance
-                  needs. Quick, reliable, and hassle-free.
-                </p>
-                <div
-                  class="bg-white p-3 d-flex align-items-center gap-2 flex-column flex-md-row mb-4"
-                >
-                  <select
+<div class="tab-pane fade show active home-page" id="home" role="tabpanel">
+  <section class="landing">
+    <div class="container d-flex justify-content-lg-between justify-content-center align-items-center gap-5 flex-wrap flex-lg-nowrap text-center text-md-start">
+      <div class="col-lg-6 col intro">
+        <h1>Professional Home Services at Your Fingertips</h1>
+        <p class="fs-5 mb-5">
+          Book trusted professionals for all your home maintenance needs. Quick, reliable, and hassle-free.
+        </p>
+        <div class="bg-white p-3 d-flex align-items-center gap-2 flex-column flex-md-row mb-4">
+          <select
                     name="service"
                     id="service"
                     class="custom-select border border-light border-1 rounded-2 py-2 px-3 flex-md-grow-0"
@@ -33,114 +24,60 @@
                     <option value="cleaning">Cleaning</option>
                     <option value="painting">Painting</option>
                   </select>
-                  <div
-                    class="flex-fill d-flex align-items-center position-relative"
-                  >
-                    <input
-                      type="text"
-                      placeholder="Your location"
-                      class="input-group border border-light border-1 rounded-2 py-2 px-3 d-flex align-items-center location"
-                      id="location"
-                      name="location"
-                    />
-                    <button
-                      class="btn btn-outline-success get-location-btn position-absolute"
-                    >
-                      Get location
-                    </button>
-                  </div>
-                </div>
-                <a class="btn booking-btn" href="login.html">Book a Service</a>
-              </div>
-              <div class="wrapper-image">
-                <img
-                  src="{{ asset('frontend/public/assest/home-repair-concept-illustration_114360-7200.avif') }}"
-                  alt="landing_page"
-                />
+          <div class="flex-fill d-flex align-items-center position-relative">
+            <input type="text" placeholder="Your location" class="input-group border border-light border-1 rounded-2 py-2 px-3 d-flex align-items-center location" id="location" name="location" />
+            <button class="btn btn-outline-success get-location-btn position-absolute">Get location</button>
+          </div>
+        </div>
+        <a class="btn booking-btn" href="{{ route('login') }}">Book a Service</a>
+      </div>
+      <div class="wrapper-image">
+        <img src="{{ asset('frontend/public/assest/home-repair-concept-illustration_114360-7200.avif') }}" alt="landing_page" />
+      </div>
+    </div>
+  </section>
+
+  <section class="services py-section">
+    <div class="container">
+      <div class="title-section text-center mb-5">
+        <h2 class="m-0">Our Services</h2>
+        <p class="fs-5 mt-3 mb-0">We offer a wide range of professional home services</p>
+      </div>
+      <div class="d-grid">
+        <div class="row flex-column flex-md-row gap-5">
+          @foreach($homeServices as $service)
+            @php
+              switch(strtolower($service->serviceType)) {
+                case 'electrical': $icon = 'fa-bolt'; break;
+                case 'maintenance': $icon = 'fa-screwdriver-wrench'; break;
+                case 'repairing': $icon = 'fa-tools'; break;
+                case 'cleaning': $icon = 'fa-broom'; break;
+                case 'washing': $icon = 'fa-soap'; break;
+                default: $icon = 'fa-cogs'; break;
+              }
+            @endphp
+            <div class="col text-center bg-white p-4 shadow rounded-2">
+              <div class="content center-flex flex-column">
+                <span class="icon center-flex mb-3">
+                  <i class="fa-solid {{ $icon }} fa-2x"></i>
+                </span>
+                <h3 class="fs-4">{{ $service->serviceType }}</h3>
+                <p>{{ $service->description ?? 'High quality service' }}</p>
+                <a class="btn btn-link text-decoration-none" href="{{ route('login') }}">Book now</a>
               </div>
             </div>
-          </section>
-          <section class="services py-section">
-            <div class="container">
-              <div class="title-section text-center mb-5">
-                <h2 class="m-0">Our Services</h2>
-                <p class="fs-5 mt-3 mb-0">
-                  We offer a wide range of professional home services
-                </p>
-              </div>
-              <div class="d-grid">
-                <div class="row flex-column flex-md-row gap-5">
-                  <div class="col text-center bg-white p-4 shadow rounded-2">
-                    <div class="content center-flex flex-column">
-                      <span class="icon center-flex mb-3">
-                        <i class="fa-solid fa-wrench fa-2x"></i>
-                      </span>
-                      <h3 class="fs-4">Plumbing</h3>
-                      <p>Professional plumbing services for your home</p>
-                      <a
-                        class="btn btn-link text-decoration-none"
-                        href="login.html"
-                      >
-                        Book now
-                      </a>
-                    </div>
-                  </div>
-                  <div class="col text-center bg-white p-4 shadow rounded-2">
-                    <div class="content center-flex flex-column">
-                      <span class="icon center-flex mb-3">
-                        <i class="fa-solid fa-bolt fa-2x"></i>
-                      </span>
-                      <h3 class="fs-4">Electrical</h3>
-                      <p>Reliable electrical repairs and installations</p>
-                      <a
-                        class="btn btn-link text-decoration-none"
-                        href="login.html"
-                      >
-                        Book now
-                      </a>
-                    </div>
-                  </div>
-                  <div class="col text-center bg-white p-4 shadow rounded-2">
-                    <div class="content center-flex flex-column">
-                      <span class="icon center-flex mb-3">
-                        <i class="fa-solid fa-broom fa-2x"></i>
-                      </span>
-                      <h3 class="fs-4">Cleaning</h3>
-                      <p>Thorough home cleaning services</p>
-                      <a
-                        class="btn btn-link text-decoration-none"
-                        href="login.html"
-                      >
-                        Book now
-                      </a>
-                    </div>
-                  </div>
-                  <div class="col text-center bg-white p-4 shadow rounded-2">
-                    <div class="content center-flex flex-column">
-                      <span class="icon center-flex mb-3">
-                        <i class="fa-solid fa-palette fa-2x"></i>
-                      </span>
-                      <h3 class="fs-4">Painting</h3>
-                      <p>Professional interior and exterior painting</p>
-                      <a
-                        class="btn btn-link text-decoration-none"
-                        href="login.html"
-                      >
-                        Book now
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <button
+          @endforeach
+        </div>
+<button
                   class="btn btn-outline-primary w-fit mx-auto mt-5 view-services-btn"
                   id="viewServices"
                 >
                   View All Services
                 </button>
-              </div>
             </div>
-          </section>
-          <section class="works py-section">
+    </div>
+  </section>
+   <section class="works py-section">
             <div class="container">
               <div class="title-section text-center mb-5">
                 <h2 class="m-0">How It Works</h2>
@@ -194,7 +131,7 @@
                   </div>
                 </div>
                 <a
-                  href="#"
+                  href="{{ route('login') }}"
                   class="rounded-2 ms-auto me-auto mt-5 bg-primary text-white"
                   >Get Started</a
                 >
@@ -224,7 +161,7 @@
                 </p>
               </div>
               <div class="center-flex flex-wrap gap-3 btns">
-                <a href="register.html" class="btn btn-warning text-white"
+                <a href="{{ route('register') }}" class="btn btn-warning text-white"
                   >Sign Up Now</a
                 >
                 <button
@@ -235,7 +172,10 @@
               </div>
             </div>
           </section>
-        </div>
+
+  <!-- Keep remaining sections as-is -->
+  <!-- ... works, reviews, get-started ... -->
+</div>
 
         <!-- Services Page -->
         <div
@@ -248,14 +188,55 @@
               <h2>Available Home Services</h2>
               <p class="fs-5">Browse our trusted service providers</p>
             </div>
-            <div class="mb-4 text-center">
-              <input
-                type="text"
-                id="searchInput"
-                class="form-control w-50 mx-auto"
-                placeholder="Search by name or description..."
-              />
-            </div>
+
+        <div class="mb-4">
+            <form method="GET" action="{{ route('frontend.home') }}" class="row g-2 justify-content-center align-items-center">
+                {{-- حقل البحث --}}
+                <div class="col-md-4">
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        class="form-control"
+                        placeholder="Search by name, description, provider..."
+                    />
+                </div>
+
+                {{-- السعر الأقصى --}}
+                <div class="col-md-2">
+                    <input
+                        type="number"
+                        name="maxPrice"
+                        value="{{ request('maxPrice') }}"
+                        class="form-control"
+                        placeholder="Max Price"
+                        min="0"
+                    />
+                </div>
+
+                {{-- نوع الخدمة --}}
+                <div class="col-md-3">
+                    <select name="serviceType" class="form-control">
+                        <option value="">All Types</option>
+                        <option value="Electrical" {{ request('serviceType') == 'Electrical' ? 'selected' : '' }}>Electrical</option>
+                        <option value="Maintenance" {{ request('serviceType') == 'Maintenance' ? 'selected' : '' }}>Maintenance</option>
+                        <option value="Repairing" {{ request('serviceType') == 'Repairing' ? 'selected' : '' }}>Repairing</option>
+                        <option value="Cleaning" {{ request('serviceType') == 'Cleaning' ? 'selected' : '' }}>Cleaning</option>
+                        <option value="Washing" {{ request('serviceType') == 'Washing' ? 'selected' : '' }}>Washing</option>
+                    </select>
+                </div>
+
+                {{-- زر البحث --}}
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        Search
+                    </button>
+                </div>
+            </form>
+    </div>
+
+
+
             <div
               id="servicesContainer"
               class="row row-cols-1 row-cols-md-3 g-4"
@@ -298,7 +279,7 @@
         </div>
 
         <div class="service-actions">
-          <button class="btn btn-primary booking-now-btn">Book Now</button>
+          <a href="{{ route('login') }}" class="btn btn-primary booking-now-btn">Book Now</a>
           <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#detailsModal">Details</button>
         </div>
       </div>

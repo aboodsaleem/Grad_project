@@ -100,100 +100,60 @@
             </div>
 
             <!-- Recent Bookings -->
-            <div class="recent-bookings mt-5 mb-5">
-              <h2 class="fw-semibold mb-20 pb-10">Recent Bookings</h2>
-              <div class="bookings-list d-flex flex-column gap-3">
-                <div
-                  class="booking-item p-20 d-flex justify-content-between align-items-center bg-white"
-                >
-                  <div class="d-flex align-items-center gap-3 booking-info">
-                    <div
-                      class="service-icon d-flex justify-content-center align-items-center text-white"
-                    >
-                      <i class="fas fa-wrench"></i>
+<div class="recent-bookings mt-5 mb-5">
+    <h2 class="fw-semibold mb-20 pb-10">Recent Bookings</h2>
+    <div class="bookings-list d-flex flex-column gap-3">
+        @foreach($recentBookings as $booking)
+            <div class="booking-item p-20 d-flex justify-content-between align-items-center bg-white rounded">
+                <div class="d-flex align-items-center gap-3 booking-info">
+                    <div class="service-icon d-flex justify-content-center align-items-center text-white">
+                        <i class="fas fa-tools"></i> {{-- يمكنك تغيير الأيقونة حسب نوع الخدمة --}}
                     </div>
                     <div class="booking-details">
-                      <h4 class="fs-6 fw-semibold">AC Maintenance</h4>
-                      <p class="mb-1">Service Provider: Ahmed Mohamed</p>
-                      <p class="mb-1">Date: January 15, 2024</p>
-                      <p>Time: 2:00 PM</p>
+                        <h4 class="fs-6 fw-semibold">{{ $booking->service->name ?? 'Service Name' }}</h4>
+                        <p class="mb-1">Service Provider: {{ $booking->serviceProvider->username ?? 'N/A' }}</p>
+                        <p class="mb-1">Date: {{ \Carbon\Carbon::parse($booking->date)->format('F d, Y') }}</p>
+                        <p>Time: {{ \Carbon\Carbon::parse($booking->time)->format('g:i A') }}</p>
                     </div>
-                  </div>
-                  <div
-                    class="d-flex flex-column align-items-center gap-10 booking-status"
-                  >
-                    <span class="status fw-medium text-center completed"
-                      >Completed</span
-                    >
-                    <div class="rating">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                    </div>
-                  </div>
                 </div>
 
-                <div
-                  class="booking-item p-20 d-flex justify-content-between align-items-center rounded bg-white"
-                >
-                  <div class="d-flex align-items-center gap-3 booking-info">
-                    <div
-                      class="service-icon d-flex justify-content-center align-items-center text-white"
-                    >
-                      <i class="fas fa-broom"></i>
-                    </div>
-                    <div class="booking-details">
-                      <h4 class="fs-6 fw-semibold">Home Cleaning</h4>
-                      <p class="mb-1">Service Provider: Fatima Ali</p>
-                      <p class="mb-1">Date: January 18, 2024</p>
-                      <p>Time: 10:00 AM</p>
-                    </div>
-                  </div>
-                  <div
-                    class="d-flex flex-column align-items-center gap-10 booking-status"
-                  >
-                    <span class="status fw-medium text-center confirmed"
-                      >Confirmed</span
-                    >
-                    <button
-                      class="btn btn-sm btn-primary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#detailsModal"
-                    >
-                      Details
-                    </button>
-                  </div>
-                </div>
+                <div class="d-flex flex-column align-items-center gap-10 booking-status">
+                    <span class="status fw-medium text-center {{ $booking->status }}">
+                        {{ ucfirst($booking->status) }}
+                    </span>
 
-                <div
-                  class="booking-item p-20 d-flex justify-content-between align-items-center rounded bg-white"
-                >
-                  <div class="d-flex align-items-center gap-3 booking-info">
-                    <div
-                      class="service-icon d-flex justify-content-center align-items-center text-white"
-                    >
-                      <i class="fas fa-tools"></i>
-                    </div>
-                    <div class="booking-details">
-                      <h4 class="fs-6 fw-semibold">Plumbing Repair</h4>
-                      <p class="mb-1">Service Provider: Mohamed Khaled</p>
-                      <p class="mb-1">Date: January 20, 2024</p>
-                      <p>Time: 4:00 PM</p>
-                    </div>
-                  </div>
-                  <div
-                    class="d-flex flex-column align-items-center gap-10 booking-status"
-                  >
-                    <span class="status fw-medium text-center pending"
-                      >Pending</span
-                    >
-                    <button class="btn btn-sm btn-secondary">Cancel</button>
-                  </div>
+                    @if($booking->status === 'completed')
+                        <div class="rating">
+                            @for($i = 0; $i < 5; $i++)
+                                <i class="fas fa-star text-warning"></i>
+                            @endfor
+                        </div>
+                    @elseif($booking->status === 'confirmed')
+                        <button class="btn btn-secondary btn-sm details-btn"
+        data-bs-toggle="modal"
+        data-bs-target="#detailsModal"
+        data-avatar="{{ asset($booking->serviceProvider->photo ?? 'default.jpg') }}"
+        data-service="{{ $booking->service->name ?? 'N/A' }}"
+        data-provider="{{ $booking->serviceProvider->username ?? 'N/A' }}"
+        data-date="{{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('F j, Y') }}"
+        data-time="{{ \Carbon\Carbon::parse($booking->start_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($booking->end_time)->format('h:i A') }}"
+        data-price="{{ $booking->price ?? 'N/A' }}"
+        data-status="{{ ucfirst($booking->status) }}">
+    Details
+</button>
+                    @elseif($booking->status === 'pending')
+                        <form method="POST" action="{{ route('customer.bookings.destroy', $booking->id) }}">
+                            @csrf
+                            @method('PATCH')
+                            <button class="btn btn-sm btn-secondary">Cancel</button>
+                        </form>
+                    @endif
                 </div>
-              </div>
             </div>
+        @endforeach
+    </div>
+</div>
+
 
             <!-- Popular Services -->
 <div class="popular-services bg-white">
@@ -343,6 +303,10 @@
               <div class="profile-info">
                 <h2>{{ $userdata->username }}</h2>
                 <p>Home Service Provider</p>
+
+                <h2>{{ $customer->username }}</h2>
+                <p>Customer since 2025</p>
+
                 <div class="d-flex gap-20 text-gray mt-10 profile-stats">
                   <span>Rating: <b>4.8</b></span>
                   <span><b>156</b> Completed Bookings</span>
@@ -999,6 +963,9 @@
               <div class="modal-image text-center">
                 <img
                   src=""
+=======
+                  src="{{ asset('frontend//public/assest/6991150.jpg') }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   alt="provider-name"
                   class="rounded-circle object-fit-cover provider-image mt-2"
                   id="detailsAvatar"
@@ -1062,6 +1029,9 @@
 
             <div class="modal-body">
               <form action="{{ route('customer.update',$userdata->id) }}" method="POST" enctype="multipart/form-data">
+=======
+               <form action="{{ route('customer.update',$customer->id) }}" method="POST" enctype="multipart/form-data">
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 @csrf
                 <!-- Full Name -->
                 <div class="mb-3">
@@ -1073,6 +1043,9 @@
                     id="fullName"
                     placeholder="Enter full name"
                     value="{{ $userdata->username }}"
+=======
+                    value="{{ $customer->username }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1086,6 +1059,9 @@
                     id="phone"
                     placeholder="+966 50 123 4567"
                     value="{{ $userdata->phone }}"
+=======
+                    value="{{ $customer->phone }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1112,6 +1088,9 @@
                     id="city"
                     placeholder="City"
                     value="{{ $userdata->city }}"
+=======
+                    value="{{ $customer->city }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1125,6 +1104,9 @@
                     id="address"
                     placeholder="Address"
                     value="{{ $userdata->address }}"
+=======
+                    value="{{ $customer->address }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1138,6 +1120,9 @@
                     id="dob"
                     placeholder="Date Of BirthDay"
                     value="{{ $userdata->date_of_birth }}"
+=======
+                    value="{{ $customer->date_of_birth }}"
+>>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 

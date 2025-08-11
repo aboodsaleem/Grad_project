@@ -13,15 +13,15 @@
             <div class="col">
               <h4 class="mb-3 fw-semibold fs-5">Services</h4>
               <ul class="ps-0">
-                <li><a href="#" class="text-light">Cleaning</a></li>
+                <li><a href="{{ route('login') }}" class="text-light">Cleaning</a></li>
                 <li class="mt-2">
-                  <a href="#" class="text-light">Plumbing</a>
+                  <a href="{{ route('login') }}" class="text-light">Plumbing</a>
                 </li>
                 <li class="mt-2">
-                  <a href="#" class="text-light">Electrical</a>
+                  <a href="{{ route('login') }}" class="text-light">Electrical</a>
                 </li>
                 <li class="mt-2">
-                  <a href="#" class="text-light">Painting</a>
+                  <a href="{{ route('login') }}" class="text-light">Painting</a>
                 </li>
               </ul>
             </div>

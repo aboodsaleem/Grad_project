@@ -213,7 +213,7 @@
             cancelButtonText: cancelText
         }).then((result) => {
             if (result.isConfirmed) {
-                const form = document.getElementById('bulk-actions-form');
+                const form = document.getElementById('bookings-form');
                 form.action = url;
                 form.submit();
             }

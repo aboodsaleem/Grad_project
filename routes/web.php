@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\CustomerBookingController;
 use App\Http\Controllers\Customer\CustomerReviewController;
 use App\Http\Controllers\Customer\CustomerServiceController;
 use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Customer\ServiceFavoriteController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FrontEnd\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -79,28 +80,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/bookings/{id}/delete', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
     Route::delete('/bookings/delete-multiple', [AdminBookingController::class, 'deleteMultiple'])->name('bookings.deleteMultiple');
 
-
-Route::middleware(['auth', 'role:admin'])->controller(AdminController::class)->group(function () {
-   Route::get('/admin/dashboard', 'adminDashboard')->name('admin.dashboard');
-   Route::get('/admin/logout',  'AdminDestroy')->name('admin.logout');
-   Route::get('/admin/profile','adminProfile')->name('admin.profile');
-   Route::post('/admin/update/','updateProfile')->name('admin.update');
-   Route::get('admin/change/password', 'AdminChangePassword')->name('admin.change.password');
-   Route::post('/admin/update-password' , 'AdminUpdatePassword')->name('admin.update.password');
-    Route::get('/inactive/provider' , 'Inactiveprovider')->name('inactive.provider');
-   Route::get('/active/provider' , 'activeprovider')->name('active.provider');
-   Route::get('/inactive/provider/details/{id}',  'InactiveDetails')->name('inactive.details');
-   Route::post('/active/provider/{id}',  'ActiveproviderApprove')->name('active.approve');
-    Route::get('/active/provider/details/{id}',  'activeDetails')->name('active.details');
-   Route::post('/inactive/provider/{id}',  'inActiveproviderApprove')->name('inactive.approve');
-});
-Route::get('/admin/login',  [AdminController::class , 'AdminLogin'])->name('admin.login')->middleware(RedirectIfAuthenticated::class);;
-
-});
+ });
+Route::get('admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
 
 
 // صفحة تسجيل دخول المسؤول
-Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
 
 // مجموعة Routes لمزود الخدمة
 Route::middleware(['auth', 'role:service_provider'])->prefix('provider')->name('provider.')->group(function () {
@@ -122,22 +106,27 @@ Route::middleware(['auth', 'role:service_provider'])->prefix('provider')->name('
 
 
 });
-// صفحة تسجيل دخول مزود الخدمة
-Route::get('/provider/login', [Service_ProviderController::class, 'service_providerlogin'])->name('provider.login');
 // مجموعة Routes للعميل
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
         Route::controller(CustomerController::class)->group(function () {
             Route::get('/dashboard', 'customerDashboard')->name('dashboard');
             Route::post('/update','customerProfileupdate')->name('update');
             Route::post('/update-password' , 'customerUpdatePassword')->name('update.password');
+            Route::post('/update-email' , 'Updateemail')->name('update.email');
+            Route::post('/update-phone' , 'Updatephone')->name('update.phone');
             Route::get('/logout',  'customerDestroy')->name('logout');
         });
     // عرض الخدمات المتاحة للعميل (index و show)
 Route::resource('bookings', CustomerBookingController::class)->only([
         'index', 'create', 'store','destroy'
     ]);
+
+    Route::post('/add-to-favorite/{service_id}', [ServiceFavoriteController::class, 'AddToFavorite']);
+    Route::post('/remove-from-favorite/{service_id}', [ServiceFavoriteController::class, 'RemoveFromFavorite'])->name('remove.favorite');
+
     // Route إضافي للإلغاء
 });
+
 // ملف المستخدم العام (تعديل/حذف البروفايل)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"  />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Customer Dashboard - Home Services</title>
     <link rel="stylesheet" href="{{ asset('frontend/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.min.css') }}" />
@@ -244,15 +245,15 @@
 <!-- Main Services Content -->
 <div class="tab-pane fade services-page" id="services" role="tabpanel">
     <div class="d-flex justify-content-between align-items-center page-header">
-        <h2 class="fw-semibold">My Available Services</h2>
-        <button class="btn btn-primary add-btn" data-bs-toggle="modal" data-bs-target="#addServiceModal">Add New Service</button>
+        <h2 class="fw-semibold"> Available Services</h2>
     </div>
 
     <div class="services-grid d-grid gap-20">
     @forelse($services as $service)
         <div class="service-card p-20 bg-white text-center position-relative" data-category="{{ $service->serviceType }}">
             <button class="btn p-0 fav-btn">
-                <i class="far fa-heart fav-icon"></i>
+            <a aria-label="Add To favorite" class="action-btn" id="{{ $service->id }}" onclick="addTofavorite(this.id)"  ><i class="far fa-heart fav-icon"></i></a>
+
             </button>
 
             <div class="service-image d-flex align-items-center justify-content-center text-white rounded-circle">
@@ -326,132 +327,7 @@
 @include('customer.bookings.index')
 
           <!-- Main Favorites Content -->
-          <div
-            class="tab-pane fade favorites-page"
-            id="favorites"
-            role="tabpanel"
-          >
-            <div
-              class="page-header d-flex align-items-center justify-content-between"
-            >
-              <h2>Favorite Service Providers</h2>
-            </div>
-            <div class="favorites-grid d-grid gap-20">
-              <div
-                class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
-              >
-                <img
-                  src="{{ asset('frontend/public/assest/ahmed.jpeg') }}"
-                  alt="provider-image"
-                  class="provider-avatar rounded-circle object-fit-cover"
-                />
-                <div class="provider-info flex-fill">
-                  <h3 class="fs-5 fw-semibold">Ahmed Mohamed</h3>
-                  <p class="text-gray">AC Maintenance Specialist</p>
-                  <div
-                    class="provider-stats d-flex align-items-center gap-10 my-10 mx-0"
-                  >
-                    <div class="rating d-flex">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                    </div>
-                    <span>4.8 (156 reviews)</span>
-                  </div>
-                  <div class="provider-details d-flex flex-column">
-                    <span>15 completed services with you</span>
-                    <span>Member since 2022</span>
-                  </div>
-                </div>
-                <div class="provider-actions d-flex flex-column gap-10">
-                  <a class="btn btn-primary" href="mailto:abood@hotmail.com"
-                    >Message</a
-                  >
-                  <button class="btn btn-sm btn-secondary">
-                    Remove from Favorites
-                  </button>
-                </div>
-              </div>
-
-              <div
-                class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
-              >
-                <img
-                  src="{{ asset('frontend/public/assest/anime-boy-chill-digital-art-hd-wallpaper-uhdpaper.com-284@0@j.jpg') }}"
-                  alt="provider-image"
-                  class="provider-avatar rounded-circle object-fit-cover"
-                />
-                <div class="provider-info flex-fill">
-                  <h3 class="fs-5 fw-semibold">Fatima Ali</h3>
-                  <p class="text-gray">Home Cleaning Specialist</p>
-                  <div
-                    class="provider-stats d-flex align-items-center gap-10 my-10 mx-0"
-                  >
-                    <div class="rating d-flex">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="far fa-star"></i>
-                    </div>
-                    <span>4.6 (89 reviews)</span>
-                  </div>
-                  <div class="provider-details d-flex flex-column">
-                    <span>8 completed services with you</span>
-                    <span>Member since 2023</span>
-                  </div>
-                </div>
-                <div class="provider-actions d-flex flex-column gap-10">
-                  <a class="btn btn-primary" href="mailto:eissam@hotmail.com"
-                    >Message</a
-                  >
-                  <button class="btn btn-sm btn-secondary">
-                    Remove from Favorites
-                  </button>
-                </div>
-              </div>
-
-              <div
-                class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
-              >
-                <img
-                  src="{{ asset('frontend/public/assest/DavidChen.jpg') }}"
-                  alt="provider-image"
-                  class="provider-avatar rounded-circle object-fit-cover"
-                />
-                <div class="provider-info flex-fill">
-                  <h3 class="fs-5 fw-semibold">Mohamed Khaled</h3>
-                  <p class="text-gray">Plumbing Repair Specialist</p>
-                  <div
-                    class="provider-stats d-flex align-items-center gap-10 my-10 mx-0"
-                  >
-                    <div class="rating d-flex">
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                      <i class="fas fa-star"></i>
-                    </div>
-                    <span>4.9 (203 reviews)</span>
-                  </div>
-                  <div class="provider-details d-flex flex-column">
-                    <span>12 completed services with you</span>
-                    <span>Member since 2021</span>
-                  </div>
-                </div>
-                <div class="provider-actions d-flex flex-column gap-10">
-                  <a class="btn btn-primary" href="mailto:bilalQat@hotmail.com">
-                    Message
-                  </a>
-                  <button class="btn btn-sm btn-secondary">
-                    Remove from Favorites
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+@include('customer.favorite.favorite')
 
 
           <!-- Main Profile Content -->
@@ -460,22 +336,13 @@
               class="profile-header bg-white d-flex align-items-center gap-20"
             >
               <img
-<<<<<<< HEAD
                 src="{{ asset($userdata->photo ?? 'upload/no_image.jpg') }}"
-=======
-                src="{{ asset(Auth::user()->photo ?? 'upload/no_image.jpg') }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 alt="Profile Image"
                 class="object-fit-cover rounded-circle profile-avatar"
               />
               <div class="profile-info">
-<<<<<<< HEAD
                 <h2>{{ $userdata->username }}</h2>
                 <p>Home Service Provider</p>
-=======
-                <h2>{{ $customer->username }}</h2>
-                <p>Customer since 2025</p>
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 <div class="d-flex gap-20 text-gray mt-10 profile-stats">
                   <span>Rating: <b>4.8</b></span>
                   <span><b>156</b> Completed Bookings</span>
@@ -497,7 +364,6 @@
                 <div class="info-grid d-grid gap-20 mt-20">
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Full Name</label>
-<<<<<<< HEAD
                     <span>{{ $userdata->username }}</span>
                   </div>
                   <div class="info-item d-flex flex-column">
@@ -519,29 +385,6 @@
                   <div class="info-item d-flex flex-column">
                     <label class="text-gray fw-semibold">Date of Birth</label>
                     <span>{{ $userdata->date_of_birth }}</span>
-=======
-                    <span>{{ $customer->username }}</span>
-                  </div>
-                  <div class="info-item d-flex flex-column">
-                    <label class="text-gray fw-semibold">Phone Number</label>
-                    <span>{{ $customer->phone }}</span>
-                  </div>
-                  <div class="info-item d-flex flex-column">
-                    <label class="text-gray fw-semibold">Email</label>
-                    <span>{{ $customer->email }}</span>
-                  </div>
-                  <div class="info-item d-flex flex-column">
-                    <label class="text-gray fw-semibold">City</label>
-                    <span>{{ $customer->city }}</span>
-                  </div>
-                  <div class="info-item d-flex flex-column">
-                    <label class="text-gray fw-semibold">Address</label>
-                    <span>{{ $customer->address }}</span>
-                  </div>
-                  <div class="info-item d-flex flex-column">
-                    <label class="text-gray fw-semibold">Date of Birth</label>
-                    <span>{{ $customer->date_of_birth }}</span>
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   </div>
                 </div>
               </div>
@@ -943,20 +786,12 @@
               >
                 <div class="modal-image rounded text-center">
                   <img
-<<<<<<< HEAD
   src=""
   alt="provider-name"
   class="img-fluid rounded-circle"
   width="200"
   height="200"
 />
-=======
-                    src="{{ asset('frontend/public/assest/sarah.jpg') }}"
-                    alt="provider-name"
-                    class="img-fluid rounded"
-                    width="150"
-                  />
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 </div>
 
                 <div class="modal-info flex-fill">
@@ -1163,11 +998,7 @@
             <div class="text-center">
               <div class="modal-image text-center">
                 <img
-<<<<<<< HEAD
                   src=""
-=======
-                  src="{{ asset('frontend//public/assest/6991150.jpg') }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   alt="provider-name"
                   class="rounded-circle object-fit-cover provider-image mt-2"
                   id="detailsAvatar"
@@ -1230,11 +1061,7 @@
             </div>
 
             <div class="modal-body">
-<<<<<<< HEAD
               <form action="{{ route('customer.update',$userdata->id) }}" method="POST" enctype="multipart/form-data">
-=======
-               <form action="{{ route('customer.update',$customer->id) }}" method="POST" enctype="multipart/form-data">
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                 @csrf
                 <!-- Full Name -->
                 <div class="mb-3">
@@ -1245,11 +1072,7 @@
                     class="form-control"
                     id="fullName"
                     placeholder="Enter full name"
-<<<<<<< HEAD
                     value="{{ $userdata->username }}"
-=======
-                    value="{{ $customer->username }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1262,11 +1085,7 @@
                     class="form-control"
                     id="phone"
                     placeholder="+966 50 123 4567"
-<<<<<<< HEAD
                     value="{{ $userdata->phone }}"
-=======
-                    value="{{ $customer->phone }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1279,11 +1098,7 @@
                     class="form-control"
                     id="email"
                     placeholder="eissam@example.com"
-<<<<<<< HEAD
                     value="{{ $userdata->email }}"
-=======
-                    value="{{ $customer->email }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1296,11 +1111,7 @@
                     class="form-control"
                     id="city"
                     placeholder="City"
-<<<<<<< HEAD
                     value="{{ $userdata->city }}"
-=======
-                    value="{{ $customer->city }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1313,11 +1124,7 @@
                     class="form-control"
                     id="address"
                     placeholder="Address"
-<<<<<<< HEAD
                     value="{{ $userdata->address }}"
-=======
-                    value="{{ $customer->address }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1330,11 +1137,7 @@
                     class="form-control"
                     id="dob"
                     placeholder="Date Of BirthDay"
-<<<<<<< HEAD
                     value="{{ $userdata->date_of_birth }}"
-=======
-                    value="{{ $customer->date_of_birth }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1389,7 +1192,7 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="modalForm" method="POST" action="{{ route('customer.update.password',$customer->id) }}">
+              <form id="modalForm" method="POST" action="{{ route('customer.update.password',$userdata->id) }}">
                 @csrf
                 <div class="form-group">
                   <label for="modalInput">Enter new value:</label>
@@ -1446,7 +1249,7 @@
               ></button>
             </div>
             <div class="modal-body">
-        <form id="emailUpdateForm" method="POST" action="{{ route('customer.update.email',$customer->id) }}">
+        <form id="emailUpdateForm" method="POST" action="{{ route('customer.update.email',$userdata->id) }}">
             @csrf
             <div class="form-group">
                   <label for="modalInput">Enter new value:</label>
@@ -1457,7 +1260,7 @@
                     class="form-control emailInput"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
-                    value="{{ $customer->email}}"
+                    value="{{ $userdata->email}}"
                   />
                 </div>
 
@@ -1501,7 +1304,7 @@
               ></button>
             </div>
             <div class="modal-body">
-            <form id="phoneUpdateForm" method="POST" action="{{ route('customer.update.phone',$customer->id) }}">
+            <form id="phoneUpdateForm" method="POST" action="{{ route('customer.update.phone',$userdata->id) }}">
                 @csrf
                 <div class="form-group">
                   <label for="phoneInput">Enter new value:</label>
@@ -1512,7 +1315,7 @@
                     class="form-control"
                     required
                     style="width: 100%; padding: 8px; margin-top: 5px"
-                    value="{{ $customer->phone}}"
+                    value="{{ $userdata->phone}}"
                   />
                 @error('phone')
                     <span class="text-danger">{{ $message }}</span>
@@ -1736,6 +1539,93 @@ document.addEventListener('DOMContentLoaded', function () {
         'email' => auth()->user()->email,
     ] : null);
 </script>
+
+ <script type="text/javascript">
+
+        function addTofavorite(service_id){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST",
+                dataType: 'json',
+                url: "/customer/add-to-favorite/"+service_id,
+
+                success:function(data){
+
+                     // Start Message
+
+            const Toast = Swal.mixin({
+                  toast: true,
+                  position: 'top-end',
+
+                  showConfirmButton: false,
+                  timer: 3000
+            })
+            if ($.isEmptyObject(data.error)) {
+
+                    Toast.fire({
+                    type: 'success',
+                    icon: 'success',
+                    title: data.success,
+                    })
+
+            }else{
+
+           Toast.fire({
+                    type: 'error',
+                    icon: 'error',
+                    title: data.error,
+                    })
+                }
+
+              // End Message
+
+
+                }
+            })
+        }
+
+
+    </script>
+
+    <script>
+$(document).ready(function(){
+    $('.remove-favorite-btn').click(function(e){
+        e.preventDefault();
+
+        let serviceId = $(this).data('service-id');
+        let button = $(this);
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: '/customer/remove-from-favorite/' + serviceId,
+            type: 'POST',
+            dataType: 'json',
+            success: function(data){
+                if(data.success) {
+                    // رسالة نجاح
+                    toastr.success(data.success);
+
+                    // إزالة بطاقة الخدمة من الصفحة (اختياري)
+                    button.closest('.service-card').remove();
+
+                } else if(data.error) {
+                    toastr.error(data.error);
+                }
+            },
+            error: function(xhr, status, error){
+                toastr.error('Something went wrong. Please try again.');
+            }
+        });
+    });
+});
+</script>
+
+
+
 
 @include('admin.partials.sweetalert_actions')
 @yield('js')

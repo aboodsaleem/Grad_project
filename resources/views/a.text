@@ -10,3 +10,49 @@
 
    <form method="POST" action="{{ route('password.email') }}">
         @csrf
+
+
+          <div class="tab-pane fade favorites-page" id="favorites" role="tabpanel">
+            <div
+              class="page-header d-flex align-items-center justify-content-between"
+            >
+              <h2>Favorite Service Providers</h2>
+            </div>
+            <div class="favorites-grid d-grid gap-20">
+              <div
+                class="favorite-provider bg-white p-20 d-flex align-items-center gap-20"
+              >
+                <img
+                  src="{{ asset('frontend/public/assest/ahmed.jpeg') }}"
+                  alt="provider-image"
+                  class="provider-avatar rounded-circle object-fit-cover"
+                />
+                <div class="provider-info flex-fill">
+                  <h3 class="fs-5 fw-semibold">Ahmed Mohamed</h3>
+                  <p class="text-gray">AC Maintenance Specialist</p>
+                  <div
+                    class="provider-stats d-flex align-items-center gap-10 my-10 mx-0"
+                  >
+                    <div class="rating d-flex">
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <span>4.8 (156 reviews)</span>
+                  </div>
+                  <div class="provider-details d-flex flex-column">
+                    <span>15 completed services with you</span>
+                    <span>Member since 2022</span>
+                  </div>
+                </div>
+                <div class="provider-actions d-flex flex-column gap-10">
+                  <a class="btn btn-primary" href="mailto:abood@hotmail.com"
+                    >Message</a
+                  >
+                  <button class="btn btn-sm btn-secondary">
+                    Remove from Favorites
+                  </button>
+                </div>
+              </div>

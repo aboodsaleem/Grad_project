@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('provider_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('service_id');
+            $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('service_id')->references('id')->on('services')->onDelete('cascade');
             $table->timestamps();
-
-            $table->unique(['customer_id', 'provider_id']); // يمنع التكرار
         });
     }
 

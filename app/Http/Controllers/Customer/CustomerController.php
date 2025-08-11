@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Favorite;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,20 +20,17 @@ class CustomerController extends Controller
         $services = Service::with('serviceProvider')->latest()->get();
         $bookings = Booking::with(['service', 'serviceProvider'])->where('user_id', Auth::id())->latest()->get();
         $latestServices = Service::with('serviceProvider')->latest()->take(3)->get();
-        return view('customer.userdashboard' , compact('userdata','services','latestServices','bookings'));
+        $favoriteServiceIds = Favorite::where('customer_id', Auth::id())->pluck('service_id')->toArray();
+        $Favoriteservices = Service::whereIn('id', $favoriteServiceIds)->get();
+        return view('customer.userdashboard' , compact('userdata','services','latestServices','bookings','Favoriteservices'));
   }
 
+
+
+
+
+
 public function customerProfileupdate(Request $request){
-    $id = Auth::user()->id;
-    $userdata = User::findOrFail($id);
-
-    $save_url = $userdata->photo; // إذا لم يتم رفع صورة جديدة، نستخدم القديمة
-}
-
-
-
-
-public function updateProfile(Request $request){
 
 
     $id = Auth::user()->id;
@@ -86,7 +84,7 @@ public function updateProfile(Request $request){
 
 
 
-public function UpdatePassword(Request $request)
+public function customerUpdatePassword(Request $request)
 {
     $id = Auth::user()->id;
     $customer = User::findOrFail($id);

@@ -29,7 +29,7 @@
             <button class="btn btn-outline-success get-location-btn position-absolute">Get location</button>
           </div>
         </div>
-        <a class="btn booking-btn" href="{{ route('customer.login') }}">Book a Service</a>
+        <a class="btn booking-btn" href="{{ route('login') }}">Book a Service</a>
       </div>
       <div class="wrapper-image">
         <img src="{{ asset('frontend/public/assest/home-repair-concept-illustration_114360-7200.avif') }}" alt="landing_page" />
@@ -63,7 +63,7 @@
                 </span>
                 <h3 class="fs-4">{{ $service->serviceType }}</h3>
                 <p>{{ $service->description ?? 'High quality service' }}</p>
-                <a class="btn btn-link text-decoration-none" href="{{ route('customer.login') }}">Book now</a>
+                <a class="btn btn-link text-decoration-none" href="{{ route('login') }}">Book now</a>
               </div>
             </div>
           @endforeach

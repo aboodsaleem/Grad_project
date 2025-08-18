@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Favorite;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,18 +19,20 @@ class CustomerController extends Controller
         $userdata = User::find($id);
         $services = Service::with('serviceProvider')->latest()->get();
         $latestServices = Service::with('serviceProvider')->latest()->take(3)->get();
+        $favoriteServiceIds = Favorite::where('customer_id', Auth::id())->pluck('service_id')->toArray();
+        $Favoriteservices = Service::whereIn('id', $favoriteServiceIds)->get();
         $bookings = Booking::with(['service', 'serviceProvider'])->where('user_id', Auth::id())->latest()->get();
         $recentBookings = Booking::with('serviceProvider') // تأكد من وجود علاقة serviceProvider
         ->latest()
         ->take(3)
         ->get();
-        return view('customer.userdashboard' , compact('userdata','services','latestServices','bookings', 'recentBookings'));
+        return view('customer.userdashboard' , compact('userdata','services','latestServices','bookings','Favoriteservices','recentBookings'));
   }
 
-    public function customerlogin(){
 
-        return view('auth.login');
-    }
+
+
+
 
 
 public function customerProfileupdate(Request $request){

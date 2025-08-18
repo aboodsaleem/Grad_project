@@ -9,6 +9,7 @@ use App\Http\Controllers\Customer\CustomerBookingController;
 use App\Http\Controllers\Customer\CustomerReviewController;
 use App\Http\Controllers\Customer\CustomerServiceController;
 use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Customer\ServiceFavoriteController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FrontEnd\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -79,8 +80,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/bookings/{id}/delete', [AdminBookingController::class, 'destroy'])->name('bookings.destroy');
     Route::delete('/bookings/delete-multiple', [AdminBookingController::class, 'deleteMultiple'])->name('bookings.deleteMultiple');
 
-    });
-Route::get('/admin/login',  [AdminController::class , 'AdminLogin'])->name('admin.login')->middleware(RedirectIfAuthenticated::class);;
+ });
+Route::get('admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
+
+
+// صفحة تسجيل دخول المسؤول
 
 // مجموعة Routes لمزود الخدمة
 Route::middleware(['auth', 'role:service_provider'])->prefix('provider')->name('provider.')->group(function () {
@@ -102,8 +106,6 @@ Route::middleware(['auth', 'role:service_provider'])->prefix('provider')->name('
 
 
 });
-// صفحة تسجيل دخول مزود الخدمة
-Route::get('/provider/login', [Service_ProviderController::class, 'service_providerlogin'])->name('provider.login');
 // مجموعة Routes للعميل
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
         Route::controller(CustomerController::class)->group(function () {
@@ -118,9 +120,12 @@ Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer
 Route::resource('bookings', CustomerBookingController::class)->only([
         'index', 'create', 'store','destroy'
     ]);
+
+    Route::post('/add-to-favorite/{service_id}', [ServiceFavoriteController::class, 'AddToFavorite']);
+    Route::post('/remove-from-favorite/{service_id}', [ServiceFavoriteController::class, 'RemoveFromFavorite'])->name('remove.favorite');
+
     // Route إضافي للإلغاء
 });
-Route::get('/customer/login', [CustomerController::class, 'customerlogin'])->name('customer.login');
 
 // ملف المستخدم العام (تعديل/حذف البروفايل)
 Route::middleware('auth')->group(function () {

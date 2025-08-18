@@ -304,8 +304,7 @@
                 <h2>{{ $userdata->username }}</h2>
                 <p>Home Service Provider</p>
 
-                <h2>{{ $customer->username }}</h2>
-                <p>Customer since 2025</p>
+            
 
                 <div class="d-flex gap-20 text-gray mt-10 profile-stats">
                   <span>Rating: <b>4.8</b></span>
@@ -962,10 +961,7 @@
             <div class="text-center">
               <div class="modal-image text-center">
                 <img
-                  src=""
-=======
                   src="{{ asset('frontend//public/assest/6991150.jpg') }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   alt="provider-name"
                   class="rounded-circle object-fit-cover provider-image mt-2"
                   id="detailsAvatar"
@@ -1029,9 +1025,7 @@
 
             <div class="modal-body">
               <form action="{{ route('customer.update',$userdata->id) }}" method="POST" enctype="multipart/form-data">
-=======
-               <form action="{{ route('customer.update',$customer->id) }}" method="POST" enctype="multipart/form-data">
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
+
                 @csrf
                 <!-- Full Name -->
                 <div class="mb-3">
@@ -1043,9 +1037,6 @@
                     id="fullName"
                     placeholder="Enter full name"
                     value="{{ $userdata->username }}"
-=======
-                    value="{{ $customer->username }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
                   />
                 </div>
 
@@ -1059,9 +1050,7 @@
                     id="phone"
                     placeholder="+966 50 123 4567"
                     value="{{ $userdata->phone }}"
-=======
-                    value="{{ $customer->phone }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
+
                   />
                 </div>
 
@@ -1088,9 +1077,7 @@
                     id="city"
                     placeholder="City"
                     value="{{ $userdata->city }}"
-=======
-                    value="{{ $customer->city }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
+
                   />
                 </div>
 
@@ -1104,9 +1091,7 @@
                     id="address"
                     placeholder="Address"
                     value="{{ $userdata->address }}"
-=======
-                    value="{{ $customer->address }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
+
                   />
                 </div>
 
@@ -1120,9 +1105,7 @@
                     id="dob"
                     placeholder="Date Of BirthDay"
                     value="{{ $userdata->date_of_birth }}"
-=======
-                    value="{{ $customer->date_of_birth }}"
->>>>>>> 239d3503b89a7b1494aa47330bfda6ee62027a7c
+
                   />
                 </div>
 

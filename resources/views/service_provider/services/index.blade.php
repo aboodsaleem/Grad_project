@@ -51,7 +51,7 @@
                   {{ $service->description }}
                 </p>
                 <div class="service-price fw-medium text-success mb-2">
-                  Base Price: {{ $service->price }}
+                  Base Price: {{ $service->price }}$
                 </div>
                 <div class="service-actions">
                   <button

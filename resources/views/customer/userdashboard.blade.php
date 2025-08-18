@@ -143,7 +143,7 @@
                     @elseif($booking->status === 'pending')
                         <form method="POST" action="{{ route('customer.bookings.destroy', $booking->id) }}">
                             @csrf
-                            @method('PATCH')
+                            @method('DELETE')
                             <button class="btn btn-sm btn-secondary">Cancel</button>
                         </form>
                     @endif

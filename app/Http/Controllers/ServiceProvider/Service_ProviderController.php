@@ -34,8 +34,78 @@ class Service_ProviderController extends Controller
         ->latest()
         ->get();
 
+ /** =======================
+         *  Today's Bookings + %
+         * ======================= */
+        $todayBookings = Booking::where('service_provider_id', $serviceProviderId)
+
+            ->count();
+
+        $yesterdayBookings = Booking::where('service_provider_id', $serviceProviderId)
+            ->count();
+
+        $todayBookingsChange = $yesterdayBookings > 0
+            ? round((($todayBookings - $yesterdayBookings) / $yesterdayBookings) * 100, 1)
+            : 0;
+
+            
+        /** =======================
+         *  Monthly Earnings + %
+         * ======================= */
+        // $monthlyEarnings = Booking::where('service_provider_id', $serviceProviderId)
+        //     ->whereMonth('created_at', now()->month)
+        //     ->whereYear('created_at', now()->year)
+        //     ->sum('price');
+
+        // $lastMonthEarnings = Booking::where('service_provider_id', $serviceProviderId)
+        //     ->whereMonth('created_at', now()->subMonth()->month)
+        //     ->whereYear('created_at', now()->subMonth()->year)
+        //     ->sum('price');
+
+        // $monthlyEarningsChange = $lastMonthEarnings > 0
+        //     ? round((($monthlyEarnings - $lastMonthEarnings) / $lastMonthEarnings) * 100, 1)
+        //     : 0;
+
+        /** =======================
+         *  Overall Rating + Change
+         * ======================= */
+        // $overallRating = Review::where('service_provider_id', $serviceProviderId)
+        //     ->avg('rating');
+        // $overallRating = $overallRating ? round($overallRating, 1) : 0;
+
+        // $lastMonthRating = Review::where('service_provider_id', $serviceProviderId)
+        //     ->whereMonth('created_at', now()->subMonth()->month)
+        //     ->whereYear('created_at', now()->subMonth()->year)
+        //     ->avg('rating');
+        // $lastMonthRating = $lastMonthRating ? round($lastMonthRating, 1) : 0;
+
+        // $ratingChange = $lastMonthRating > 0
+        //     ? round($overallRating - $lastMonthRating, 1)
+        //     : 0;
+
+        /** =======================
+         *  New Customers + %
+         * ======================= */
+        $newCustomers = User::whereHas('bookings', function ($query) use ($serviceProviderId) {
+                $query->where('service_provider_id', $serviceProviderId)
+                      ->whereMonth('created_at', now()->month)
+                      ->whereYear('created_at', now()->year);
+            })
+            ->count();
+
+        $lastMonthNewCustomers = User::whereHas('bookings', function ($query) use ($serviceProviderId) {
+                $query->where('service_provider_id', $serviceProviderId)
+                      ->whereMonth('created_at', now()->subMonth()->month)
+                      ->whereYear('created_at', now()->subMonth()->year);
+            })
+            ->count();
+
+        $newCustomersChange = $lastMonthNewCustomers > 0
+            ? round((($newCustomers - $lastMonthNewCustomers) / $lastMonthNewCustomers) * 100, 1)
+            : 0;
+
     // 📤 إرسال كلا المتغيرين للعرض
-    return view('service_provider.index', compact('service_provider', 'services','bookings','pendingBooking'));
+    return view('service_provider.index', compact('service_provider', 'services','bookings','pendingBooking', 'todayBookings', 'yesterdayBookings', 'todayBookingsChange', 'newCustomers', 'lastMonthNewCustomers', 'newCustomersChange' ));
     }
 
 

@@ -103,8 +103,10 @@
                 </div>
                 <div class="stat-info">
                   <h3>Today's Bookings</h3>
-                  <p class="stat-number fw-bold">12</p>
-                  <span class="stat-change positive fw-medium">+15%</span>
+                  <p class="stat-number fw-bold">{{ $todayBookings }}</p>
+<span class="stat-change {{ $todayBookingsChange >= 0 ? 'positive' : 'negative' }}">
+    {{ $todayBookingsChange >= 0 ? '+' : '' }}{{ $todayBookingsChange }}%
+</span>
                 </div>
               </div>
 
@@ -142,8 +144,10 @@
                 </div>
                 <div class="stat-info">
                   <h3>New Customers</h3>
-                  <p class="stat-number fw-bold">28</p>
-                  <span class="stat-change positive fw-medium">+12%</span>
+                  <p class="stat-number fw-bold">{{ $newCustomers }}</p>
+<span class="stat-change {{ $newCustomersChange >= 0 ? 'positive' : 'negative' }}">
+    {{ $newCustomersChange >= 0 ? '+' : '' }}{{ $newCustomersChange }}%
+</span>
                 </div>
               </div>
             </div>
